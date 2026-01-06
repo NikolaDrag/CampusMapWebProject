@@ -163,31 +163,27 @@ class CampusMap {
         - color: цвят на линията
     */
     drawPath(points, color = '#e74c3c') {
-        // Първо премахваме стария път
-        this.clearPath();
+    this.clearPath();
 
-        if (points.length < 2) {
-            console.log("Нужни са поне 2 точки за път");
-            return;
-        }
+    if (points.length < 2) return;
 
-        /*
-            ОБЯСНЕНИЕ:
-            L.polyline() създава линия между множество точки.
-            Опциите контролират как изглежда линията.
-        */
-        this.currentPath = L.polyline(points, {
-            color: color,        // Цвят
-            weight: 4,           // Дебелина
-            opacity: 0.8,        // Прозрачност
-            dashArray: '10, 10'  // Пунктирана линия
-        }).addTo(this.map);
+    // Instead of a polyline, we create a Routing Control
+    this.currentPath = L.Routing.control({
+        waypoints: [
+            L.latLng(points[0]), // Start point
+            L.latLng(points[points.length - 1]) // End point
+        ],
+        lineOptions: {
+            styles: [{ color: color, opacity: 0.8, weight: 6 }]
+        },
+        addWaypoints: false, // Prevents users from adding new points
+        draggableWaypoints: false, // Keeps the path fixed
+        createMarker: function() { return null; } // Optional: hides extra markers
+    }).addTo(this.map);
 
-        // Центрираме картата да показва целия път
-        this.map.fitBounds(this.currentPath.getBounds(), { padding: [50, 50] });
-
-        console.log("Пътят е начертан");
-    }
+    // Note: Routing is asynchronous, so fitBounds needs to happen 
+    // after the route is found.
+}
 
     // Премахва текущия път
     clearPath() {
