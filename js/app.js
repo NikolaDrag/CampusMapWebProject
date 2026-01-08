@@ -28,56 +28,182 @@ const sampleCampusData = {
     },
     
     // Възли (зали/сгради)
-    nodes: {
-        "101": {
-            name: "Зала 101 - Лекционна",
-            lat: 42.6940,
-            lng: 23.3340,
-            floor: 1,
-            building: "Корпус А"
+    "nodes": { 
+        "FMI200": {
+            "id": "FMI200",
+            "name": "ФМИ - Зала 200 (Аудиториум)",
+            "lat": 42.67446134148402,
+            "lng": 23.330705138156453,
+            "floor": 2,
+            "building": "ФМИ"
         },
-        "102": {
-            name: "Зала 102 - Компютърна",
-            lat: 42.6938,
-            lng: 23.3355,
-            floor: 1,
-            building: "Корпус А"
+
+        "FMI325": {
+            "id": "FMI325",
+            "name": "ФМИ - Зала 325 (Аудиториум)",
+            "lat": 42.67430456688142,
+            "lng": 23.330292077993278,
+            "floor": 3,
+            "building": "ФМИ"
         },
-        "201": {
-            name: "Зала 201 - Семинарна",
-            lat: 42.6930,
-            lng: 23.3345,
-            floor: 2,
-            building: "Корпус А"
+
+        "FMI314": {
+            "id": "FMI314",
+            "name": "ФМИ - Зала 314 (Компютърна зала)",
+            "lat": 42.674288790798414,
+            "lng": 23.330398025242594,
+            "floor": 3,
+            "building": "ФМИ"
         },
+
+        "FMI100": {
+            "id": "FMI100",
+            "name": "ФМИ - Стая 100 (Бордови Игри)",
+            "lat": 42.67453529163051,
+            "lng": 23.330855341851827,
+            "floor": 1,
+            "building": "ФМИ"
+        },
+
+        "FMI01": {
+            "id": "FMI01",
+            "name": "ФМИ - Зала 01 (Лекционна зала)",
+            "lat": 42.67433513302949,
+            "lng": 23.33073866576677,
+            "floor": -1,
+            "building": "ФМИ"
+        },
+
+        "FRIZER": {
+            "id": "FRIZER",
+            "name": "ФЗФ - Фризер (Аудиториум)",
+            "lat": 42.673611401459986,
+            "lng": 23.329913886506514,
+            "floor": 3,
+            "building": "Корпус А"
+        },
+
+        "FZFSTOL": {
+            "id": "FZFSTOL",
+            "name": "ФЗФ - Столова",
+            "lat": 42.67363506583987,
+            "lng": 23.328792723156628,
+            "floor": 1,
+            "building": "ФЗФ - Столова"
+        },
+
+        "FZF326B": {
+            "id": "FZF326B",
+            "name": "ФЗФ - Зала 326 (Лекционна зала)",
+            "lat": 42.673850016882334,
+            "lng": 23.32906362626069,
+            "floor": 1,
+            "building": "Корпус B"
+        },
+
+        "KULATA": {
+            "id": "KULATA",
+            "name": "ФХФ - КУЛАТА (Място за развлечение)",
+            "lat": 42.67462484841399,
+            "lng": 23.332607355597276,
+            "floor": 8,
+            "building": "ФХФ"
+        },
+
+        "FHF210": {
+            "id": "FHF210",
+            "name": "ФХФ - Зала 210 (Аудиториум)",
+            "lat": 42.67436059986496,
+            "lng": 23.333615866142356,
+            "floor": 2,
+            "building": "ФХФ"
+        },
+
+        "FHF130": {
+            "id": "FHF130",
+            "name": "ФХФ - Зала 130 (Аудиториум)",
+            "lat": 42.67453906635889,
+            "lng": 23.333465662446656,
+            "floor": 1,
+            "building": "ФХФ"
+        },
+
+        "FHF610": {
+            "id": "FHF610",
+            "name": "ФХФ - Зала 610 (Лекционна зала)",
+            "lat": 42.67454596836928,
+            "lng": 23.332575169086972,
+            "floor": 6,
+            "building": "ФХФ"
+        },
+         
+        "REKTORAT605": {
+            "id": "REKTORAT605",
+            "name": "Ректорат - Зала 605 (Лекционна зала)",
+            "lat": 42.69309189128681,
+            "lng": 23.335447570079072,
+            "floor": 6,
+            "building": "Корпус А"
+        },
+
+        "MAMUT": {
+            "id": "MAMUT",
+            "name": "Ректорат - Скелет на мамут (Музей)",
+            "lat": 42.694211644238806,
+            "lng": 23.33495136147671,
+            "floor": 6,
+            "building": "Музей по палеонтология и исторична геология"
+        },
+
         "LIB": {
-            name: "Библиотека",
-            lat: 42.6925,
-            lng: 23.3360,
-            floor: 1,
-            building: "Корпус Б"
+            "id": "LIB",
+            "name": "Ректорат - Библиотека",
+            "lat": 42.693596571168605,
+            "lng": 23.335761388513756,
+            "floor": 1,
+            "building": "Корпус Б"
         },
+        
         "CAFE": {
-            name: "Кафене/Стол",
-            lat: 42.6935,
-            lng: 23.3330,
-            floor: 0,
-            building: "Централно"
+            "id": "CAFE",
+            "name": "Ректорат - Столова",
+            "lat": 42.6935,
+            "lng": 23.3330,
+            "floor": 0,
+            "building": "Централна"
         }
     },
-    
-    // Връзки (пътища между зали с разстояние в минути)
-    edges: [
-        { from: "101", to: "102", weight: 3 },   // 101 <-> 102: 3 минути
-        { from: "101", to: "201", weight: 2 },   // 101 <-> 201: 2 минути (стълби)
-        { from: "101", to: "CAFE", weight: 4 },  // 101 <-> Кафене: 4 минути
-        { from: "102", to: "LIB", weight: 5 },   // 102 <-> Библиотека: 5 минути
-        { from: "201", to: "LIB", weight: 4 },   // 201 <-> Библиотека: 4 минути
-        { from: "LIB", to: "CAFE", weight: 6 },  // Библиотека <-> Кафене: 6 минути
-        { from: "102", to: "201", weight: 3 }    // 102 <-> 201: 3 минути
-    ]
+    "edges": []
 };
 
+
+const nodeIds = Object.keys(sampleCampusData.nodes);
+const newEdges = [];
+
+for (let i = 0; i < nodeIds.length; i++) {
+    for (let j = i + 1; j < nodeIds.length; j++) {
+        const nodeA = sampleCampusData.nodes[nodeIds[i]];
+        const nodeB = sampleCampusData.nodes[nodeIds[j]];
+
+        // Calculation: Euclidean distance between coordinates
+        // You can also use Haversine formula for real-world meters
+        const dist = Math.sqrt(
+            Math.pow(nodeA.lat - nodeB.lat, 2) + 
+            Math.pow(nodeA.lng - nodeB.lng, 2)
+        );
+
+        newEdges.push({
+            from: nodeIds[i],
+            to: nodeIds[j],
+            weight: parseFloat(dist.toFixed(6)) // Distance as the weight
+        });
+    }
+}
+
+// Update the object
+sampleCampusData.edges = newEdges;
+
+console.log(`Generated ${sampleCampusData.edges.length} edges.`);
 // ========== ИНИЦИАЛИЗАЦИЯ ==========
 
 /*
