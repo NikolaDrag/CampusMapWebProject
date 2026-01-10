@@ -156,7 +156,8 @@ class CampusMap {
     // ========== РИСУВАНЕ НА ПЪТ ==========
 
     /*
-        Рисува линия (път) между точки на картата.
+        Рисува маршрут между точки използвайки Leaflet Routing Machine.
+        Показва реални пътища и инструкции за навигация.
         
         Параметри:
         - points: масив от координати [[lat1, lng1], [lat2, lng2], ...]
@@ -173,30 +174,48 @@ class CampusMap {
 
         /*
             ОБЯСНЕНИЕ:
-            L.polyline() създава линия между масив от точки.
-            - points: [[lat1, lng1], [lat2, lng2], ...]
-            - color: цвят на линията
-            - weight: дебелина на линията
-            - opacity: прозрачност (0-1)
+            L.Routing.control() създава маршрут по реални улици.
+            Използва OSRM (Open Source Routing Machine) за изчисление.
+            
+            waypoints: началната и крайната точка
+            routeWhileDragging: false = не преизчислява при влачене
+            addWaypoints: false = не добавя нови точки
+            draggableWaypoints: false = не можеш да местиш точките
+            
+            lineOptions: стил на линията
+            show: false = скрива панела с инструкции (можеш да го направиш true)
         */
-        this.currentPath = L.polyline(points, {
-            color: color,
-            weight: 6,
-            opacity: 0.8,
-            dashArray: '10, 10',  // Пунктирана линия за по-добра видимост
-            lineJoin: 'round'
+        
+        // Конвертираме точките в Leaflet LatLng обекти
+        const waypoints = points.map(p => L.latLng(p[0], p[1]));
+        
+        this.currentPath = L.Routing.control({
+            waypoints: waypoints,
+            routeWhileDragging: false,
+            addWaypoints: false,
+            draggableWaypoints: false,
+            lineOptions: {
+                styles: [{ 
+                    color: color, 
+                    opacity: 0.8, 
+                    weight: 6 
+                }]
+            },
+            // Скриваме панела с инструкции (вдясно)
+            // Ако искаш да видиш инструкциите, махни тази част
+            createMarker: function() { return null; }, // Не създава маркери
+            show: true, // Скрива панела с инструкции
+            collapsible: false
         }).addTo(this.map);
 
         /*
             ОБЯСНЕНИЕ:
-            fitBounds() автоматично мащабира картата така,
-            че да се виждат всички точки от пътя.
+            Routing Machine автоматично zoom-ва картата към маршрута.
+            Ако искаш ръчен контрол, можеш да използваш:
+            this.map.fitBounds(waypoints, { padding: [50, 50] });
         */
-        this.map.fitBounds(this.currentPath.getBounds(), {
-            padding: [50, 50]  // Добавя padding около пътя
-        });
 
-        console.log(`Начертан път с ${points.length} точки`);
+        console.log(`Routing маршрут с ${points.length} точки`);
     }
 
     // Премахва текущия път
