@@ -163,27 +163,41 @@ class CampusMap {
         - color: цвят на линията
     */
     drawPath(points, color = '#e74c3c') {
-    this.clearPath();
+        // Първо премахваме стария път
+        this.clearPath();
 
-    if (points.length < 2) return;
+        if (points.length < 2) {
+            console.log("Нужни са поне 2 точки за път");
+            return;
+        }
 
-    // Instead of a polyline, we create a Routing Control
-    this.currentPath = L.Routing.control({
-        waypoints: [
-            L.latLng(points[0]), // Start point
-            L.latLng(points[points.length - 1]) // End point
-        ],
-        lineOptions: {
-            styles: [{ color: color, opacity: 0.8, weight: 6 }]
-        },
-        addWaypoints: false, // Prevents users from adding new points
-        draggableWaypoints: false, // Keeps the path fixed
-        createMarker: function() { return null; } // Optional: hides extra markers
-    }).addTo(this.map);
+        /*
+            ОБЯСНЕНИЕ:
+            L.polyline() създава линия между масив от точки.
+            - points: [[lat1, lng1], [lat2, lng2], ...]
+            - color: цвят на линията
+            - weight: дебелина на линията
+            - opacity: прозрачност (0-1)
+        */
+        this.currentPath = L.polyline(points, {
+            color: color,
+            weight: 6,
+            opacity: 0.8,
+            dashArray: '10, 10',  // Пунктирана линия за по-добра видимост
+            lineJoin: 'round'
+        }).addTo(this.map);
 
-    // Note: Routing is asynchronous, so fitBounds needs to happen 
-    // after the route is found.
-}
+        /*
+            ОБЯСНЕНИЕ:
+            fitBounds() автоматично мащабира картата така,
+            че да се виждат всички точки от пътя.
+        */
+        this.map.fitBounds(this.currentPath.getBounds(), {
+            padding: [50, 50]  // Добавя padding около пътя
+        });
+
+        console.log(`Начертан път с ${points.length} точки`);
+    }
 
     // Премахва текущия път
     clearPath() {

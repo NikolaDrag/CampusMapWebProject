@@ -24,6 +24,25 @@ $action = isset($_GET['action']) ? $_GET['action'] : '';
 try {
     switch ($action) {
         
+        // ==================== АВТЕНТИКАЦИЯ ====================
+        
+        case 'check_auth':
+            // Проверка дали потребителят е логнат
+            require_once 'auth.php';
+            
+            if (isLoggedIn()) {
+                echo json_encode([
+                    'logged_in' => true,
+                    'user' => getCurrentUser()
+                ]);
+            } else {
+                echo json_encode([
+                    'logged_in' => false,
+                    'user' => null
+                ]);
+            }
+            break;
+        
         // ==================== ЗАЛИ (NODES) ====================
         
         case 'get_nodes':

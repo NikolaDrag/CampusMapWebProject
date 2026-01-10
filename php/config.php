@@ -10,7 +10,7 @@
 define('CONFIG_VERSION', '1.0');
 
 // Настройки на базата данни
-define('DB_HOST', 'localhost');      // Адрес на MySQL сървъра
+define('DB_HOST', 'localhost:3307');  // Адрес на MySQL сървъра (променен порт!)
 define('DB_NAME', 'campus_navigator'); // Име на базата данни
 define('DB_USER', 'root');            // Потребител (сменете при production)
 define('DB_PASS', '');                // Парола (празна за XAMPP по подразбиране)
