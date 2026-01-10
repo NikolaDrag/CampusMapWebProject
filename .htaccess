@@ -1,0 +1,22 @@
+# .htaccess - Конфигурация за Apache (XAMPP)
+
+# Активиране на PHP обработка
+AddType application/x-httpd-php .php
+
+# Показване на PHP грешки (за разработка)
+php_flag display_errors on
+php_value error_reporting E_ALL
+
+# Кодировка UTF-8
+AddDefaultCharset UTF-8
+
+# Разрешаване на .php файлове да се изпълняват
+<FilesMatch "\.php$">
+    SetHandler application/x-httpd-php
+</FilesMatch>
+
+# Защита - скриване на файлове като .htaccess
+<Files ~ "^\.">
+    Order allow,deny
+    Deny from all
+</Files>

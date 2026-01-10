@@ -226,6 +226,9 @@ document.addEventListener('DOMContentLoaded', function() {
     // Стъпка 4: Добавяме event listeners
     setupEventListeners();
     
+    // Стъпка 5: Проверяваме автентикацията (нова стъпка!)
+    checkAuthStatus();
+    
     console.log("=== Инициализацията завърши ===");
 });
 
@@ -308,6 +311,12 @@ function setupEventListeners() {
     
     // Бутон за импорт
     document.getElementById('import-btn').addEventListener('click', importData);
+    
+    // Бутон "Добави към любими" (нов!)
+    const addFavoriteBtn = document.getElementById('add-favorite-btn');
+    if (addFavoriteBtn) {
+        addFavoriteBtn.addEventListener('click', addFavorite);
+    }
     
     console.log("Event listeners са настроени");
 }
@@ -519,6 +528,313 @@ function importData() {
     };
     
     reader.readAsText(file);
+}
+
+// ========== АВТЕНТИКАЦИЯ И ЛЮБИМИ МАРШРУТИ ==========
+
+/*
+    ОБЯСНЕНИЕ:
+    Тези функции управляват:
+    1. Проверка дали потребителят е логнат
+    2. Показване/скриване на съответните елементи
+    3. Зареждане на любими маршрути от базата
+    4. Добавяне/изтриване на любими маршрути
+*/
+
+// Глобална променлива за текущия потребител
+let currentUser = null;
+
+// Текущо избран маршрут (от последното търсене)
+let lastRoute = {
+    from: null,
+    to: null
+};
+
+function checkAuthStatus() {
+    /*
+        ОБЯСНЕНИЕ:
+        Проверява дали потребителят е логнат чрез AJAX заявка.
+        Ако е логнат - показва името му и бутон "Изход".
+        Ако не е - показва линкове за вход/регистрация.
+    */
+    
+    fetch('php/api.php?action=check_auth')
+        .then(response => response.json())
+        .then(data => {
+            const authLinks = document.getElementById('auth-links');
+            const userInfo = document.getElementById('user-info');
+            const usernameSpan = document.getElementById('username');
+            const logoutBtn = document.getElementById('logout-btn');
+            const favoritesSection = document.getElementById('favorites-section');
+            const addFavoriteBtn = document.getElementById('add-favorite-btn');
+            
+            if (data.logged_in) {
+                // Потребителят е логнат
+                currentUser = data.user;
+                
+                // Скриваме линковете за вход/регистрация
+                if (authLinks) authLinks.style.display = 'none';
+                
+                // Показваме информация за потребителя
+                if (userInfo) userInfo.style.display = 'flex';
+                if (usernameSpan) usernameSpan.textContent = currentUser.username;
+                
+                // Показваме секцията с любими маршрути
+                if (favoritesSection) favoritesSection.style.display = 'block';
+                
+                // Показваме бутона за добавяне
+                if (addFavoriteBtn) addFavoriteBtn.style.display = 'block';
+                
+                // Зареждаме любимите маршрути
+                loadFavorites();
+                
+                // Добавяме event listener за logout
+                if (logoutBtn) {
+                    logoutBtn.addEventListener('click', logout);
+                }
+                
+                console.log("Потребител логнат:", currentUser.username);
+            } else {
+                // Потребителят НЕ е логнат
+                currentUser = null;
+                
+                // Показваме линковете за вход/регистрация
+                if (authLinks) authLinks.style.display = 'block';
+                
+                // Скриваме информация за потребителя
+                if (userInfo) userInfo.style.display = 'none';
+                
+                // Скриваме секцията с любими маршрути
+                if (favoritesSection) favoritesSection.style.display = 'none';
+                
+                // Скриваме бутона за добавяне
+                if (addFavoriteBtn) addFavoriteBtn.style.display = 'none';
+                
+                console.log("Няма логнат потребител");
+            }
+        })
+        .catch(error => {
+            console.error("Грешка при проверка на автентикация:", error);
+        });
+}
+
+function loadFavorites() {
+    /*
+        ОБЯСНЕНИЕ:
+        Зарежда любимите маршрути на потребителя от базата данни.
+        Използва GET заявка към API-то.
+    */
+    
+    if (!currentUser) {
+        console.log("Не може да се заредят любими - няма логнат потребител");
+        return;
+    }
+    
+    fetch('php/api.php?action=get_favorites')
+        .then(response => response.json())
+        .then(data => {
+            const favoritesList = document.getElementById('favorites-list');
+            
+            if (!favoritesList) return;
+            
+            // Изчистваме списъка
+            favoritesList.innerHTML = '';
+            
+            if (data.success && data.favorites && data.favorites.length > 0) {
+                // Добавяме всеки любим маршрут
+                data.favorites.forEach(fav => {
+                    const li = document.createElement('li');
+                    li.innerHTML = `
+                        <div class="favorite-info">
+                            <span class="favorite-name">${escapeHtml(fav.name)}</span>
+                            <span class="favorite-route">${escapeHtml(fav.node_from)} → ${escapeHtml(fav.node_to)}</span>
+                        </div>
+                        <div class="favorite-actions">
+                            <button class="favorite-use" onclick="useFavorite('${escapeHtml(fav.node_from)}', '${escapeHtml(fav.node_to)}')" title="Използвай маршрута">
+                                🗺️
+                            </button>
+                            <button class="favorite-delete" onclick="deleteFavorite(${fav.id})" title="Изтрий от любими">
+                                ✕
+                            </button>
+                        </div>
+                    `;
+                    favoritesList.appendChild(li);
+                });
+                
+                console.log("Заредени любими маршрути:", data.favorites.length);
+            } else {
+                // Няма любими маршрути
+                favoritesList.innerHTML = '<li class="no-favorites">Нямаш любими маршрути</li>';
+            }
+        })
+        .catch(error => {
+            console.error("Грешка при зареждане на любими:", error);
+        });
+}
+
+function addFavorite() {
+    /*
+        ОБЯСНЕНИЕ:
+        Добавя текущия маршрут (последно търсения) към любимите.
+        Показва диалог за име на маршрута.
+    */
+    
+    if (!currentUser) {
+        alert('Трябва да влезеш в профила си за да запазваш любими маршрути!');
+        return;
+    }
+    
+    // Вземаме текущо избраните точки
+    const startId = document.getElementById('start-point').value;
+    const endId = document.getElementById('end-point').value;
+    
+    if (!startId || !endId) {
+        alert('Първо избери начална и крайна точка!');
+        return;
+    }
+    
+    if (startId === endId) {
+        alert('Началната и крайната точка са еднакви!');
+        return;
+    }
+    
+    // Вземаме имената на точките
+    const startNode = campusGraph.getNode(startId);
+    const endNode = campusGraph.getNode(endId);
+    
+    // Предлагаме име по подразбиране
+    const defaultName = `${startNode ? startNode.name : startId} → ${endNode ? endNode.name : endId}`;
+    
+    // Питаме потребителя за име
+    const name = prompt('Въведи име за маршрута:', defaultName);
+    
+    if (name === null) {
+        // Потребителят натисна Cancel
+        return;
+    }
+    
+    if (name.trim() === '') {
+        alert('Името не може да бъде празно!');
+        return;
+    }
+    
+    // Изпращаме заявка към API-то
+    const formData = new FormData();
+    formData.append('action', 'add_favorite');
+    formData.append('node_from', startId);
+    formData.append('node_to', endId);
+    formData.append('name', name.trim());
+    
+    fetch('php/api.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                alert('Маршрутът е добавен към любимите!');
+                loadFavorites();  // Презареждаме списъка
+            } else {
+                alert('Грешка: ' + (data.message || 'Неизвестна грешка'));
+            }
+        })
+        .catch(error => {
+            console.error("Грешка при добавяне на любим:", error);
+            alert('Възникна грешка при запазване!');
+        });
+}
+
+function deleteFavorite(favoriteId) {
+    /*
+        ОБЯСНЕНИЕ:
+        Изтрива любим маршрут от базата данни.
+        Показва потвърждение преди изтриване.
+    */
+    
+    if (!currentUser) {
+        alert('Трябва да влезеш в профила си!');
+        return;
+    }
+    
+    if (!confirm('Сигурен ли си, че искаш да изтриеш този маршрут от любимите?')) {
+        return;
+    }
+    
+    const formData = new FormData();
+    formData.append('action', 'delete_favorite');
+    formData.append('favorite_id', favoriteId);
+    
+    fetch('php/api.php', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                loadFavorites();  // Презареждаме списъка
+                console.log("Любим маршрут изтрит");
+            } else {
+                alert('Грешка: ' + (data.message || 'Неизвестна грешка'));
+            }
+        })
+        .catch(error => {
+            console.error("Грешка при изтриване на любим:", error);
+            alert('Възникна грешка при изтриване!');
+        });
+}
+
+function useFavorite(nodeFrom, nodeTo) {
+    /*
+        ОБЯСНЕНИЕ:
+        Използва любим маршрут - избира точките и търси пътя.
+    */
+    
+    const startSelect = document.getElementById('start-point');
+    const endSelect = document.getElementById('end-point');
+    
+    // Избираме точките в dropdown-ите
+    startSelect.value = nodeFrom;
+    endSelect.value = nodeTo;
+    
+    // Търсим пътя
+    findPath();
+}
+
+function logout() {
+    /*
+        ОБЯСНЕНИЕ:
+        Излизане от профила.
+        Изпраща заявка към auth.php и презарежда страницата.
+    */
+    
+    fetch('php/auth.php?action=logout')
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                currentUser = null;
+                // Презареждаме страницата за да се обновят всички елементи
+                window.location.reload();
+            } else {
+                alert('Грешка при излизане!');
+            }
+        })
+        .catch(error => {
+            console.error("Грешка при logout:", error);
+            // При грешка все пак презареждаме
+            window.location.reload();
+        });
+}
+
+function escapeHtml(text) {
+    /*
+        ОБЯСНЕНИЕ:
+        Помощна функция за escape на HTML специални символи.
+        Предпазва от XSS атаки.
+    */
+    
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
 console.log("app.js зареден успешно!");

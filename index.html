@@ -5,47 +5,50 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campus Navigator - Навигация в кампуса</title>
     
-    <!-- 
-        ОБЯСНЕНИЕ: Leaflet е библиотека за интерактивни карти.
-        Тя работи с OpenStreetMap и е БЕЗПЛАТНА.
-        Зареждаме CSS и JS от CDN (интернет).
-    -->
+    <!-- Leaflet - библиотека за интерактивни карти с OpenStreetMap -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.css" />
-    <script src="https://unpkg.com/leaflet-routing-machine@latest/dist/leaflet-routing-machine.js"></script>
+    
     <!-- Нашият CSS файл -->
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- HEADER: Заглавие на страницата -->
+    <!-- HEADER: Заглавие и навигация -->
     <header>
-        <h1>🏫 Campus Navigator</h1>
-        <p>Намери най-краткия път между зали в кампуса</p>
+        <div class="header-content">
+            <div class="header-title">
+                <h1>Campus Navigator</h1>
+                <p>Намери най-краткия път между зали в кампуса</p>
+            </div>
+            <div class="header-auth">
+                <!-- Линкове за вход/регистрация (показват се за нелогнати) -->
+                <div id="auth-links">
+                    <a href="login.php">Вход</a>
+                    <a href="register.php">Регистрация</a>
+                </div>
+                <!-- Информация за потребителя (показва се за логнати) -->
+                <div id="user-info" style="display:none;">
+                    <span>Здравей, <strong id="username"></strong></span>
+                    <button id="logout-btn">Изход</button>
+                </div>
+            </div>
+        </div>
     </header>
 
     <!-- MAIN: Основно съдържание -->
     <main>
         <!-- Контейнер за картата -->
         <div id="map-container">
-            <!-- 
-                ОБЯСНЕНИЕ: Тук Leaflet ще нарисува картата.
-                id="map" е важно - JavaScript ще го използва.
-            -->
             <div id="map"></div>
         </div>
 
         <!-- Панел за управление (отстрани) -->
         <div id="control-panel">
-            <h2>🧭 Навигация</h2>
+            <h2>Навигация</h2>
             
             <!-- Избор на начална и крайна точка -->
             <div class="form-group">
                 <label for="start-point">Начална точка:</label>
-                <!-- 
-                    ОБЯСНЕНИЕ: select е падащо меню.
-                    JavaScript ще го напълни с опции от данните.
-                -->
                 <select id="start-point">
                     <option value="">-- Избери зала --</option>
                 </select>
@@ -59,29 +62,36 @@
             </div>
 
             <!-- Бутон за намиране на път -->
-            <button id="find-path-btn">🔍 Намери път</button>
+            <button id="find-path-btn">Намери път</button>
+            
+            <!-- Бутон за добавяне в любими (показва се само за логнати) -->
+            <button id="add-favorite-btn" style="display:none;">Добави в любими</button>
 
-            <!-- Тук ще показваме резултата -->
+            <!-- Резултат -->
             <div id="result">
                 <h3>Резултат:</h3>
                 <p id="result-text">Избери начална и крайна точка</p>
                 <p id="result-distance"></p>
             </div>
 
+            <!-- Секция за любими маршрути -->
+            <hr>
+            <div id="favorites-section" style="display:none;">
+                <h2>❤️ Любими маршрути</h2>
+                <ul id="favorites-list"></ul>
+            </div>
+
             <!-- Секция за експорт/импорт -->
             <hr>
-            <h2>📁 Данни</h2>
-            <button id="export-json-btn">📤 Експорт JSON</button>
-            <button id="export-csv-btn">📤 Експорт CSV</button>
+            <h2>Данни</h2>
+            <button id="export-json-btn">Експорт JSON</button>
+            <button id="export-csv-btn">Експорт CSV</button>
             <input type="file" id="import-file" accept=".json,.csv">
-            <button id="import-btn">📥 Импорт</button>
+            <button id="import-btn">Импорт</button>
         </div>
     </main>
 
-    <!-- 
-        ОБЯСНЕНИЕ: JavaScript файловете се зареждат в този ред,
-        защото app.js зависи от graph.js и map.js
-    -->
+    <!-- JavaScript файлове -->
     <script src="js/graph.js"></script>
     <script src="js/map.js"></script>
     <script src="js/app.js"></script>
