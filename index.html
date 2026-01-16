@@ -17,7 +17,6 @@
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <!-- HEADER: Заглавие и навигация -->
     <header>
         <div class="header-content">
             <div class="header-title">
@@ -39,18 +38,14 @@
         </div>
     </header>
 
-    <!-- MAIN: Основно съдържание -->
     <main>
-        <!-- Контейнер за картата -->
         <div id="map-container">
             <div id="map"></div>
         </div>
 
-        <!-- Панел за управление (отстрани) -->
         <div id="control-panel">
             <h2>Навигация</h2>
             
-            <!-- Избор на начална и крайна точка -->
             <div class="form-group">
                 <label for="start-point">Начална точка:</label>
                 <select id="start-point">
@@ -65,27 +60,22 @@
                 </select>
             </div>
 
-            <!-- Бутон за намиране на път -->
             <button id="find-path-btn">Намери път</button>
             
-            <!-- Бутон за добавяне в любими (показва се само за логнати) -->
             <button id="add-favorite-btn" style="display:none;">Добави в любими</button>
 
-            <!-- Резултат -->
             <div id="result">
                 <h3>Резултат:</h3>
                 <p id="result-text">Избери начална и крайна точка</p>
                 <p id="result-distance"></p>
             </div>
 
-            <!-- Секция за любими маршрути -->
             <hr>
             <div id="favorites-section" style="display:none;">
                 <h2>❤️ Любими маршрути</h2>
                 <ul id="favorites-list"></ul>
             </div>
 
-            <!-- Секция за експорт/импорт -->
             <hr>
             <h2>Данни</h2>
             <button id="export-json-btn">Експорт JSON</button>
@@ -95,7 +85,6 @@
         </div>
     </main>
 
-    <!-- JavaScript файлове -->
     <script src="js/graph.js?v=4"></script>
     <script src="js/map.js?v=4"></script>
     <script src="js/app.js?v=4"></script>

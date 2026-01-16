@@ -1,4 +1,5 @@
 <?php
+
 /**
  * api.php - REST API за работа със зали и връзки
  * 
@@ -319,7 +320,7 @@ try {
             break;
             
         default:
-            echo json_encode(['success' => false, 'error' => 'Непозната команда']);
+            echo json_encode(['success' => false, 'error' => 'Непозната команда '.$action]);
             break;
     }
     

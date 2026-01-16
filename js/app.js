@@ -717,17 +717,16 @@ function addFavorite() {
         return response.text();
     })
     .then(text => {
-        
         let data;
         try {
             data = JSON.parse(text);
         } catch (err) {
-            alert("Server returned invalid JSON:\n" + text);
+            console.error("Server returned invalid JSON:\n" + text);
             return;
         }
 
         if (data.success) {
-            alert('Маршрутът е добавен към любимите!');
+            console.log('Маршрутът е добавен към любимите!');
             loadFavorites();
         } else {
             alert('Грешка: ' + (data.error || 'Неизвестна грешка'));
@@ -755,26 +754,35 @@ function deleteFavorite(favoriteId) {
     }
     
     const formData = new FormData();
-    formData.append('action', 'delete_favorite');
     formData.append('favorite_id', favoriteId);
     
-    fetch('php/api.php', {
+    fetch('php/api.php?action=delete_favorite', {
         method: 'POST',
         body: formData
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                loadFavorites();  // Презареждаме списъка
-                console.log("Любим маршрут изтрит");
-            } else {
-                alert('Грешка: ' + (data.message || 'Неизвестна грешка'));
-            }
-        })
-        .catch(error => {
-            console.error("Грешка при изтриване на любим:", error);
-            alert('Възникна грешка при изтриване!');
-        });
+    .then(response => {
+        console.log('HTTP Status:', response.status);
+        return response.text();
+    })
+    .then(text => {
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (err) {
+            console.error("Server returned invalid JSON:\n" + text);
+            return;
+        }
+
+        if (data.success) {
+            console.log('Любим маршрут изтрит');
+            loadFavorites();
+        } else {
+            alert('Грешка: ' + (data.error || 'Неизвестна грешка'));
+        }
+    })
+    .catch(error => {
+        alert('Възникна грешка при изтриване!');
+    });
 }
 
 function useFavorite(nodeFrom, nodeTo) {
