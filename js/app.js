@@ -673,18 +673,11 @@ function loadFavorites() {
 }
 
 function addFavorite() {
-    /*
-        ОБЯСНЕНИЕ:
-        Добавя текущия маршрут (последно търсения) към любимите.
-        Показва диалог за име на маршрута.
-    */
-    
     if (!currentUser) {
         alert('Трябва да влезеш в профила си за да запазваш любими маршрути!');
         return;
     }
     
-    // Вземаме текущо избраните точки
     const startId = document.getElementById('start-point').value;
     const endId = document.getElementById('end-point').value;
     
@@ -698,50 +691,51 @@ function addFavorite() {
         return;
     }
     
-    // Вземаме имената на точките
     const startNode = campusGraph.getNode(startId);
     const endNode = campusGraph.getNode(endId);
     
-    // Предлагаме име по подразбиране
     const defaultName = `${startNode ? startNode.name : startId} → ${endNode ? endNode.name : endId}`;
     
-    // Питаме потребителя за име
     const name = prompt('Въведи име за маршрута:', defaultName);
     
-    if (name === null) {
-        // Потребителят натисна Cancel
-        return;
-    }
-    
-    if (name.trim() === '') {
+    if (name === null || name.trim() === '') {
         alert('Името не може да бъде празно!');
         return;
     }
     
-    // Изпращаме заявка към API-то
     const formData = new FormData();
-    formData.append('action', 'add_favorite');
     formData.append('node_from', startId);
     formData.append('node_to', endId);
     formData.append('name', name.trim());
-    
-    fetch('php/api.php', {
+
+    fetch('php/api.php?action=add_favorite', {
         method: 'POST',
         body: formData
     })
-        .then(response => response.json())
-        .then(data => {
-            if (data.success) {
-                alert('Маршрутът е добавен към любимите!');
-                loadFavorites();  // Презареждаме списъка
-            } else {
-                alert('Грешка: ' + (data.message || 'Неизвестна грешка'));
-            }
-        })
-        .catch(error => {
-            console.error("Грешка при добавяне на любим:", error);
-            alert('Възникна грешка при запазване!');
-        });
+    .then(response => {
+        console.log('HTTP Status:', response.status);
+        return response.text();
+    })
+    .then(text => {
+        
+        let data;
+        try {
+            data = JSON.parse(text);
+        } catch (err) {
+            alert("Server returned invalid JSON:\n" + text);
+            return;
+        }
+
+        if (data.success) {
+            alert('Маршрутът е добавен към любимите!');
+            loadFavorites();
+        } else {
+            alert('Грешка: ' + (data.error || 'Неизвестна грешка'));
+        }
+    })
+    .catch(error => {
+        alert('Възникна грешка при запазване!');
+    });
 }
 
 function deleteFavorite(favoriteId) {
