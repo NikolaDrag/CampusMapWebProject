@@ -49,6 +49,9 @@
             <p class="auth-link">
                 Вече имате акаунт? <a href="login.php">Влезте</a>
             </p>
+            <p class="auth-link">
+                <a href="index.html">Към картата 🍆</a>
+            </p>
         </div>
     </div>
     
