@@ -50,7 +50,7 @@ class CampusMap {
             setView() задава центъра и нивото на zoom.
         */
         this.map = L.map(this.containerId).setView([centerLat, centerLng], zoom);
-
+        this.routingControl = null;
         /*
             ОБЯСНЕНИЕ:
             L.tileLayer() добавя "плочките" на картата.
@@ -189,24 +189,27 @@ class CampusMap {
         // Конвертираме точките в Leaflet LatLng обекти
         const waypoints = points.map(p => L.latLng(p[0], p[1]));
         
-        this.currentPath = L.Routing.control({
-            waypoints: waypoints,
-            routeWhileDragging: false,
-            addWaypoints: false,
-            draggableWaypoints: false,
-            lineOptions: {
-                styles: [{ 
-                    color: color, 
-                    opacity: 0.8, 
-                    weight: 6 
-                }]
-            },
-            // Скриваме панела с инструкции (вдясно)
-            // Ако искаш да видиш инструкциите, махни тази част
-            createMarker: function() { return null; }, // Не създава маркери
-            show: true, // Скрива панела с инструкции
-            collapsible: false
-        }).addTo(this.map);
+        if (!this.routingControl) {
+            this.routingControl = L.Routing.control({
+                waypoints: waypoints,
+                routeWhileDragging: false,
+                addWaypoints: false,
+                draggableWaypoints: false,
+                lineOptions: {
+                    styles: [{
+                        color: color,
+                        opacity: 0.8,
+                        weight: 6
+                    }]
+                },
+                createMarker: () => null,
+                show: true,
+                collapsible: false
+            }).addTo(this.map);
+
+        } else {
+            this.routingControl.setWaypoints(waypoints);
+        }
 
         /*
             ОБЯСНЕНИЕ:
