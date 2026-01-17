@@ -221,9 +221,8 @@ class CampusMap {
     // Премахва текущия път
     clearPath() {
         if (this.currentPath) {
-            this.map.removeLayer(this.currentPath);
+            this.currentPath.remove();
             this.currentPath = null;
-            console.log("Пътят е премахнат");
         }
     }
 

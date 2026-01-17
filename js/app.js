@@ -296,11 +296,6 @@ function populateDropdowns() {
 }
 
 function setupEventListeners() {
-    /*
-        ОБЯСНЕНИЕ:
-        Event listeners "слушат" за действия на потребителя
-        и изпълняват функции когато се случат.
-    */
     
     // Бутон "Намери път"
     document.getElementById('find-path-btn').addEventListener('click', findPath);
@@ -400,7 +395,7 @@ function drawPathOnMap(path) {
         const node = campusGraph.getNode(id);
         return [node.lat, node.lng];
     });
-    
+
     // Рисуваме пътя
     campusMap.drawPath(points, '#e74c3c');
 }
