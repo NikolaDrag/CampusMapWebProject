@@ -35,7 +35,8 @@ const sampleCampusData = {
             "lat": 42.67446134148402,
             "lng": 23.330705138156453,
             "floor": 2,
-            "building": "ФМИ"
+            "building": "ФМИ",
+            "hidden": false
         },
 
         "FMI325": {
@@ -44,7 +45,8 @@ const sampleCampusData = {
             "lat": 42.67430456688142,
             "lng": 23.330292077993278,
             "floor": 3,
-            "building": "ФМИ"
+            "building": "ФМИ",
+            "hidden": false
         },
 
         "FMI314": {
@@ -53,7 +55,8 @@ const sampleCampusData = {
             "lat": 42.674288790798414,
             "lng": 23.330398025242594,
             "floor": 3,
-            "building": "ФМИ"
+            "building": "ФМИ",
+            "hidden": false
         },
 
         "FMI100": {
@@ -62,7 +65,8 @@ const sampleCampusData = {
             "lat": 42.67453529163051,
             "lng": 23.330855341851827,
             "floor": 1,
-            "building": "ФМИ"
+            "building": "ФМИ",
+            "hidden": false
         },
 
         "FMI01": {
@@ -71,7 +75,8 @@ const sampleCampusData = {
             "lat": 42.67433513302949,
             "lng": 23.33073866576677,
             "floor": -1,
-            "building": "ФМИ"
+            "building": "ФМИ",
+            "hidden": false
         },
 
         "FRIZER": {
@@ -80,7 +85,8 @@ const sampleCampusData = {
             "lat": 42.673611401459986,
             "lng": 23.329913886506514,
             "floor": 3,
-            "building": "Корпус А"
+            "building": "ФЗФ",
+            "hidden": false
         },
 
         "FZFSTOL": {
@@ -89,7 +95,8 @@ const sampleCampusData = {
             "lat": 42.67363506583987,
             "lng": 23.328792723156628,
             "floor": 1,
-            "building": "ФЗФ - Столова"
+            "building": "ФЗФ",
+            "hidden": false
         },
 
         "FZF326B": {
@@ -98,7 +105,8 @@ const sampleCampusData = {
             "lat": 42.673850016882334,
             "lng": 23.32906362626069,
             "floor": 1,
-            "building": "Корпус B"
+            "building": "ФЗФ",
+            "hidden": false
         },
 
         "KULATA": {
@@ -107,7 +115,8 @@ const sampleCampusData = {
             "lat": 42.67462484841399,
             "lng": 23.332607355597276,
             "floor": 8,
-            "building": "ФХФ"
+            "building": "ФХФ",
+            "hidden": false
         },
 
         "FHF210": {
@@ -116,7 +125,8 @@ const sampleCampusData = {
             "lat": 42.67436059986496,
             "lng": 23.333615866142356,
             "floor": 2,
-            "building": "ФХФ"
+            "building": "ФХФ",
+            "hidden": false
         },
 
         "FHF130": {
@@ -125,7 +135,8 @@ const sampleCampusData = {
             "lat": 42.67453906635889,
             "lng": 23.333465662446656,
             "floor": 1,
-            "building": "ФХФ"
+            "building": "ФХФ",
+            "hidden": false
         },
 
         "FHF610": {
@@ -134,7 +145,8 @@ const sampleCampusData = {
             "lat": 42.67454596836928,
             "lng": 23.332575169086972,
             "floor": 6,
-            "building": "ФХФ"
+            "building": "ФХФ",
+            "hidden": false
         },
          
         "REKTORAT605": {
@@ -143,7 +155,8 @@ const sampleCampusData = {
             "lat": 42.69309189128681,
             "lng": 23.335447570079072,
             "floor": 6,
-            "building": "Корпус А"
+            "building": "Ректорат",
+            "hidden": false
         },
 
         "MAMUT": {
@@ -152,7 +165,8 @@ const sampleCampusData = {
             "lat": 42.694211644238806,
             "lng": 23.33495136147671,
             "floor": 6,
-            "building": "Музей по палеонтология и исторична геология"
+            "building": "Ректорат",
+            "hidden": false
         },
 
         "LIB": {
@@ -161,7 +175,8 @@ const sampleCampusData = {
             "lat": 42.693596571168605,
             "lng": 23.335761388513756,
             "floor": 1,
-            "building": "Корпус Б"
+            "building": "Ректорат",
+            "hidden": false
         },
         
         "CAFE": {
@@ -170,39 +185,223 @@ const sampleCampusData = {
             "lat": 42.6935,
             "lng": 23.3330,
             "floor": 0,
-            "building": "Централна"
-        }
+            "building": "Ректорат",
+            "hidden": false
+        },
+        
+        "FMI_VHOD": {
+            "id": "FMI_VHOD",
+            "name": "ФМИ - Вход",
+            "lat": 42.67450347360084,
+            "lng": 23.330413453347777,
+            "floor": 1,
+            "building": "ФМИ",
+            "hidden": true
+        },
+        "FZF_VHOD": {
+            "id": "FZF_VHOD",
+            "name": "ФЗФ - Вход",
+            "lat": 42.67393156529344,
+            "lng": 23.329798048598324,
+            "floor": 1,
+            "building": "ФЗФ",
+            "hidden": true
+        },
+        "FHF_VHOD": {
+            "id": "FHF_VHOD",
+            "name": "ФХФ - Вход",
+            "lat": 42.6747287746268,
+            "lng": 23.333360530459398,
+            "floor": 1,
+            "building": "ФХФ",
+            "hidden": true
+        },
+        "REKTORAT_VHOD": {
+            "id": "REKTORAT_VHOD",
+            "name": "Ректорат - Вход",
+            "lat": 42.693521658007015,
+            "lng": 23.334634860807206,
+            "floor": 1,
+            "building": "Ректорат",
+            "hidden": true
+        },
+        "FZF_FMI":
+        {
+            "id": "FZF_FMI",
+            "name": "Пътека ФЗФ-ФМИ",
+            "lat": 42.674330203001595,
+            "lng": 23.329892428871545,
+            "floor": 1,
+            "building": "FMI-FZF Paths",
+            "hidden": true
+        },
+        "FMI_FHF1": {
+            "id": "FMI_FHF1",
+            "name": "Пътека ФХФ-ФМИ",
+            "lat": 42.67464966768705,
+            "lng": 23.331000181169276,
+            "floor": 1,
+            "building": "FMI-FHF Paths",
+            "hidden": true
+        },
+        "FMI_FHF2": {
+            "id": "FMI_FHF2",
+            "name": "Пътека ФХФ-ФМИ",
+            "lat": 42.67424836457649,
+            "lng":  23.33141190025043,
+            "floor": 1,
+            "building": "FMI-FHF Paths",
+            "hidden": false
+        },
+        "FMI_FHF3": {
+            "id": "FMI_FHF3",
+            "name": "Пътека ФХФ-ФМИ",
+            "lat": 42.67412807173594, 
+            "lng": 23.331873240175387,
+            "floor": 1,
+            "building": "FMI-FHF Paths",
+            "hidden":  false
+        },
     },
     "edges": []
 };
 
 
 const nodeIds = Object.keys(sampleCampusData.nodes);
+
+function getDistance(node1, node2) {
+    const R = 6371e3; // Earth radius in meters
+    const phi1 = node1.lat * Math.PI / 180;
+    const phi2 = node2.lat * Math.PI / 180;
+    const deltaPhi = (node2.lat - node1.lat) * Math.PI / 180;
+    const deltaLambda = (node2.lng - node1.lng) * Math.PI / 180;
+
+    const a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+              Math.cos(phi1) * Math.cos(phi2) *
+              Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c; // Returns distance in meters
+}
+
+const nodesByBuilding = Object.values(sampleCampusData.nodes).reduce((acc, node) => {
+    if (!acc[node.building]) {
+        acc[node.building] = [];
+    }
+
+    acc[node.building].push(node);
+    return acc;
+}, {});
+
 const newEdges = [];
+Object.entries(nodesByBuilding).forEach(([buildingName, rooms]) => {
+    
+    for (let i = 0; i < rooms.length; i++) {
+        for (let j = i + 1; j < rooms.length; j++) {
+            const nodeA = rooms[i];
+            const nodeB = rooms[j];
+            if(nodeA.id === "FMI_FHF1" && nodeB.id === "FMI_FHF3") continue;
+            if(nodeA.id === "FMI_FHF3" && nodeB.id === "FMI_FHF1") continue;
+            if(nodeA.id === "FHF130" && nodeB.id === "FHF210") continue;
+            if(nodeA.id === "FHF210" && nodeB.id === "FHF130") continue;
+            const dist = Math.round((getDistance(nodeA, nodeB)/1.38)/60); // ako vurvim s like 5km/h
+        
+            newEdges.push({
+                source: nodeA.id,
+                target: nodeB.id,
+                distance: dist,
+                
+            });
+        }
+    }
+});
 
-for (let i = 0; i < nodeIds.length; i++) {
-    for (let j = i + 1; j < nodeIds.length; j++) {
-        const nodeA = sampleCampusData.nodes[nodeIds[i]];
-        const nodeB = sampleCampusData.nodes[nodeIds[j]];
+const buildingNames = Object.keys(nodesByBuilding);
 
-        // Calculation: Euclidean distance between coordinates
-        // You can also use Haversine formula for real-world meters
-        const dist = Math.sqrt(
-            Math.pow(nodeA.lat - nodeB.lat, 2) + 
-            Math.pow(nodeA.lng - nodeB.lng, 2)
-        );
+for (let i = 0; i < buildingNames.length; i++) {
+    for (let j = i + 1; j < buildingNames.length; j++) {
+        const buildingA = buildingNames[i];
+        const buildingB = buildingNames[j];
 
-        newEdges.push({
-            from: nodeIds[i],
-            to: nodeIds[j],
-            weight: parseFloat(dist.toFixed(6)) // Distance as the weight
-        });
+        const entranceA = nodesByBuilding[buildingA].find(node => node.id.endsWith("VHOD"));
+        const entranceB = nodesByBuilding[buildingB].find(node => node.id.endsWith("VHOD"));
+        
+        if (entranceA && entranceB) {
+            if (entranceA.id === "FMI_VHOD" && entranceB.id === "FZF_VHOD") continue;
+            if(entranceA.id === "FZF_VHOD" && entranceB.id === "FMI_VHOD") continue;
+            if(entranceA.id === "FMI_VHOD" && entranceB.id === "FHF_VHOD") continue;
+            if(entranceA.id === "FHF_VHOD" && entranceB.id === "FMI_VHOD") continue;
+            if(entranceA.id === "FZF_VHOD" && entranceB.id === "FHF_VHOD") continue;
+            if(entranceA.id === "FHF_VHOD" && entranceB.id === "FZF_VHOD") continue;
+            
+            const distMeters = getDistance(entranceA, entranceB);
+            
+            const travelTime = Math.round((distMeters / 1.38) / 60); 
+
+            newEdges.push({
+                source: entranceA.id,
+                target: entranceB.id,
+                distance: travelTime, 
+                
+            });
+        }
     }
 }
+newEdges.push({
+    source: "FMI_VHOD",
+    target: "FZF_FMI",
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_VHOD"], sampleCampusData.nodes["FZF_FMI"])/1.38/60),
+});
+console.log( getDistance(sampleCampusData.nodes["FMI_VHOD"], sampleCampusData.nodes["FZF_FMI"])/1.38/60, "DAAATAAAA")
+newEdges.push({
+    source: "FZF_VHOD",
+    target: "FZF_FMI",
+    distance: Math.round(getDistance(sampleCampusData.nodes["FZF_VHOD"], sampleCampusData.nodes["FZF_FMI"])/1.38/60),
+});
+
+// FMI - FHF PATHS
+newEdges.push({
+    source: "FMI_VHOD",
+    target: "FMI_FHF1",
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_VHOD"], sampleCampusData.nodes["FMI_FHF1"])/1.38/60),
+});newEdges.push({
+    source: "FMI_FHF1",
+    target: "FMI_VHOD",
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF1"], sampleCampusData.nodes["FMI_VHOD"])/1.38/60),
+
+
+});newEdges.push({
+    source: "FMI_FHF1",
+    target: "FMI_FHF2",
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF1"], sampleCampusData.nodes["FMI_FHF2"])/1.38/60),
+});newEdges.push({
+    source: "FMI_FHF2",
+    target: "FMI_FHF1",
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF2"], sampleCampusData.nodes["FMI_FHF1"])/1.38/60),
+
+});newEdges.push({
+    source: "FMI_FHF2",
+    target: "FMI_FHF3",
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF2"], sampleCampusData.nodes["FMI_FHF3"])/1.38/60),
+});newEdges.push({
+    source: "FMI_FHF3",
+    target: "FMI_FHF2",
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF3"], sampleCampusData.nodes["FMI_FHF2"])/1.38/60),
+
+
+});newEdges.push({
+    source: "FMI_FHF3",
+    target: "FHF_VHOD",
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF3"], sampleCampusData.nodes["FHF_VHOD"])/1.38/60),
+});newEdges.push({
+    source: "FHF_VHOD",
+    target: "FMI_FHF3",
+    distance: Math.round(getDistance(sampleCampusData.nodes["FHF_VHOD"], sampleCampusData.nodes["FMI_FHF3"])/1.38/60),
+});
 
 // Update the object
 sampleCampusData.edges = newEdges;
-
+console.log(sampleCampusData.edges)
 console.log(`Generated ${sampleCampusData.edges.length} edges.`);
 // ========== ИНИЦИАЛИЗАЦИЯ ==========
 
@@ -246,7 +445,7 @@ function loadSampleData() {
     // Добавяме възлите
     for (let id in sampleCampusData.nodes) {
         const node = sampleCampusData.nodes[id];
-        campusGraph.addNode(id, node.name, node.lat, node.lng, node.floor, node.building);
+        campusGraph.addNode(id, node.name, node.lat, node.lng, node.floor, node.building, node.hidden);
         
         // Добавяме маркер на картата за всеки възел
         const popupContent = `
@@ -254,12 +453,16 @@ function loadSampleData() {
             Етаж: ${node.floor}<br>
             Сграда: ${node.building}
         `;
-        campusMap.addMarker(id, node.lat, node.lng, popupContent, 'blue');
+        if(!node.hidden)
+            {
+            campusMap.addMarker(id, node.lat, node.lng, popupContent, 'blue');
+        }
+        
     }
     
     // Добавяме връзките
     for (let edge of sampleCampusData.edges) {
-        campusGraph.addEdge(edge.from, edge.to, edge.weight);
+        campusGraph.addEdge(edge.source, edge.target, edge.distance);
     }
     
     console.log("Примерните данни са заредени");
@@ -278,6 +481,13 @@ function populateDropdowns() {
     
     // Добавяме опция за всеки възел
     nodes.forEach(node => {
+        console.log("NODE:", node.hidden);
+        if(node.hidden)
+            {
+                console.log("Hidden node skipped:", node.id);
+                return;
+                
+            }
         // Създаваме нов option елемент
         const option1 = document.createElement('option');
         option1.value = node.id;
@@ -393,11 +603,12 @@ function drawPathOnMap(path) {
     // Конвертираме id-та в координати
     const points = path.map(id => {
         const node = campusGraph.getNode(id);
-        return [node.lat, node.lng];
+        return [node.lat, node.lng,node.building,];
     });
 
     // Рисуваме пътя
-    campusMap.drawPath(points, '#e74c3c');
+    console.log("Рисуване на път на картата:", points);
+    campusMap.drawFullRoute(points, '#e74c3c');
 }
 
 // ========== ЕКСПОРТ/ИМПОРТ ФУНКЦИИ ==========

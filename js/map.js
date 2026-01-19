@@ -30,7 +30,8 @@ class CampusMap {
         this.containerId = containerId;
         this.map = null;
         this.markers = {};
-        this.currentPath = null;
+        this.currentPolylines = []; // Променено на масив
+        this.routingControls = [];
     }
 
     // ========== ИНИЦИАЛИЗАЦИЯ НА КАРТАТА ==========
@@ -163,78 +164,104 @@ class CampusMap {
         - points: масив от координати [[lat1, lng1], [lat2, lng2], ...]
         - color: цвят на линията
     */
-    drawPath(points, color = '#e74c3c') {
-        // Първо премахваме стария път
-        this.clearPath();
+    drawFullRoute(pathNodes, color = '#e74c3c') {
+    // 1. Изчистваме всичко старо
+    this.clearPath();
 
-        if (points.length < 2) {
-            console.log("Нужни са поне 2 точки за път");
-            return;
-        }
+    if (pathNodes.length < 2) return;
+    
+    console.log("Drawing full route:", pathNodes[0], pathNodes[pathNodes.length -1]);
 
-        /*
-            ОБЯСНЕНИЕ:
-            L.Routing.control() създава маршрут по реални улици.
-            Използва OSRM (Open Source Routing Machine) за изчисление.
-            
-            waypoints: началната и крайната точка
-            routeWhileDragging: false = не преизчислява при влачене
-            addWaypoints: false = не добавя нови точки
-            draggableWaypoints: false = не можеш да местиш точките
-            
-            lineOptions: стил на линията
-            show: false = скрива панела с инструкции (можеш да го направиш true)
-        */
+    // 2. Итерираме през двойки съседни точки
+    for (let i = 0; i < pathNodes.length - 1; i++) {
+        const start = pathNodes[i];
+        const end = pathNodes[i + 1];
         
-        // Конвертираме точките в Leaflet LatLng обекти
-        const waypoints = points.map(p => L.latLng(p[0], p[1]));
-        
-        if (!this.routingControl) {
-            this.routingControl = L.Routing.control({
+        // Вземаме координатите. Тук приемаме, че обектите имат .lat и .lng
+        const waypoints = [
+            L.latLng(start[0], start[1]),
+            L.latLng(end[0], end[1] )
+        ];
+        console.log(waypoints);
+        if(((start[2] === "ФМИ"&& end[2] ==="FMI-FZF Paths") || (start[2] === "FMI-FZF Paths" && end[2] ==="ФЗФ"))||
+           ((start[2] === "ФЗФ"&& end[2] ==="FMI-FZF Paths") || (start[2] === "FMI-FZF Paths" && end[2] ==="ФМИ"))||
+           ((start[2] === "ФМИ"&& end[2] ==="FMI-FHF Paths") || (start[2] === "FMI-FHF Paths" && end[2] ==="ФХФ"))||
+           ((start[2] === "ФХФ"&& end[2] ==="FMI-FHF Paths") || (start[2] === "FMI-FHF Paths" && end[2] ==="ФМИ")))
+            {
+                const polyline = L.polyline(waypoints, {
+                color: color,
+                weight: 5,
+                dashArray: '10, 10', // Пунктир за вътрешен път
+                opacity: 0.9
+            }).addTo(this.map);
+            this.currentPolylines.push(polyline);   
+            continue; 
+            }
+        // ПРОВЕРКА: В една и съща сграда ли сме?
+        if (start[2] === end[2]) {
+            // ЧЕРТАЕМ ПРАВА ЛИНИЯ (Indoor)
+            const polyline = L.polyline(waypoints, {
+                color: color,
+                weight: 5,
+                dashArray: '10, 10', // Пунктир за вътрешен път
+                opacity: 0.9
+            }).addTo(this.map);
+            
+            this.currentPolylines.push(polyline);
+        } else {
+            // ЧЕРТАЕМ ПЪТ ПО УЛИЦИ (Outdoor)
+            const control = L.Routing.control({
                 waypoints: waypoints,
-                routeWhileDragging: false,
                 addWaypoints: false,
                 draggableWaypoints: false,
-                lineOptions: {
-                    styles: [{
-                        color: color,
-                        opacity: 0.8,
-                        weight: 6
-                    }]
-                },
                 createMarker: () => null,
-                show: true,
-                collapsible: false
+                lineOptions: {
+                    styles: [{ color: color, weight: 6, opacity: 0.8 }]
+                },
+                show: false, // Скриваме панела с инструкции за всеки малък сегмент
+                collapsible: true
             }).addTo(this.map);
 
-        } else {
-            this.routingControl.setWaypoints(waypoints);
+            this.routingControls.push(control);
+            
         }
-
-        /*
-            ОБЯСНЕНИЕ:
-            Routing Machine автоматично zoom-ва картата към маршрута.
-            Ако искаш ръчен контрол, можеш да използваш:
-            this.map.fitBounds(waypoints, { padding: [50, 50] });
-        */
-
-        console.log(`Routing маршрут с ${points.length} точки`);
     }
+    this.centerOnPath(pathNodes);
+}
 
     // Премахва текущия път
     clearPath() {
-        if (this.currentPath) {
-            this.currentPath.remove();
-            this.currentPath = null;
-        }
-    }
+    // Изчистваме всички права линии
+    this.currentPolylines.forEach(line => {
+        this.map.removeLayer(line);
+    });
+    this.currentPolylines = [];
+
+    // Изчистваме всички Routing контроли
+    this.routingControls.forEach(control => {
+        this.map.removeControl(control);
+    });
+    this.routingControls = [];
+}
 
     // ========== ПОМОЩНИ МЕТОДИ ==========
 
     // Центрира картата на определени координати
-    centerOn(lat, lng, zoom = 16) {
-        this.map.setView([lat, lng], zoom);
-    }
+    centerOnPath(pathNodes) {
+    if (!pathNodes || pathNodes.length === 0) return;
+
+    // Създаваме обект, който описва "рамката" на маршрута
+    const points = pathNodes.map(node => [node[0], node[1]]);
+    const bounds = L.latLngBounds(points);
+
+    // fitBounds автоматично центрира и избира правилния Zoom
+    this.map.fitBounds(bounds, {
+        padding: [50, 50], // Оставя място от 50px до краищата на екрана
+        maxZoom: 18,       // Предотвратява прекалено приближаване при кратки пътища
+        animate: true,     // Плавно движение
+        duration: 1.5      // Продължителност на анимацията в секунди
+    });
+}
 
     // Фокусира върху маркер
     focusMarker(id) {

@@ -56,7 +56,7 @@ class CampusGraph {
         - floor: етаж (по желание)
         - building: сграда (по желание)
     */
-    addNode(id, name, lat, lng, floor = 1, building = "Главна") {
+    addNode(id, name, lat, lng, floor = 1, building = "Главна",hidden=false) {
         // Записваме информацията за възела
         this.nodes[id] = {
             id: id,
@@ -64,7 +64,8 @@ class CampusGraph {
             lat: lat,
             lng: lng,
             floor: floor,
-            building: building
+            building: building,
+            hidden: hidden
         };
         
         // Създаваме празен списък за съседите
@@ -86,6 +87,9 @@ class CampusGraph {
     */
     addEdge(from, to, weight, bidirectional = true) {
         // Проверка дали възлите съществуват
+        
+        console.log(this.nodes);
+        console.log(from, to);
         if (!this.nodes[from] || !this.nodes[to]) {
             console.error(`Грешка: Възел ${from} или ${to} не съществува!`);
             return;
@@ -225,7 +229,7 @@ class CampusGraph {
 
         // Добавяме връзките
         for (let edge of data.edges) {
-            this.addEdge(edge.from, edge.to, edge.weight, false);
+            this.addEdge(edge.source, edge.target, edge.distance, false);
         }
 
         console.log("Данните са импортирани успешно!");
