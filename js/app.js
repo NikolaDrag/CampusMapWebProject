@@ -196,7 +196,7 @@ const sampleCampusData = {
             "lng": 23.330413453347777,
             "floor": 1,
             "building": "ФМИ",
-            "hidden": true
+            "hidden": false
         },
         "FZF_VHOD": {
             "id": "FZF_VHOD",
@@ -205,7 +205,7 @@ const sampleCampusData = {
             "lng": 23.329798048598324,
             "floor": 1,
             "building": "ФЗФ",
-            "hidden": true
+            "hidden": false
         },
         "FHF_VHOD": {
             "id": "FHF_VHOD",
@@ -214,7 +214,7 @@ const sampleCampusData = {
             "lng": 23.333360530459398,
             "floor": 1,
             "building": "ФХФ",
-            "hidden": true
+            "hidden": false
         },
         "REKTORAT_VHOD": {
             "id": "REKTORAT_VHOD",
@@ -223,7 +223,7 @@ const sampleCampusData = {
             "lng": 23.334634860807206,
             "floor": 1,
             "building": "Ректорат",
-            "hidden": true
+            "hidden": false
         },
         "FZF_FMI":
         {
