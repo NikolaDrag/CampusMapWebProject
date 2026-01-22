@@ -301,11 +301,11 @@ ProjectWeb/
 
 Администратор:
 - Потребител: admin
-- Парола: admin123
+- Парола: password
 
 Обикновен потребител:
 - Потребител: user
-- Парола: user123
+- Парола: password
 
 5.5 Конфигурационен файл (php/config.php):
 
@@ -388,8 +388,8 @@ ID  От  До  Време(мин)
 
 ID  Потребител  Email             Парола
 --  ----------  ----------------  --------
-1   admin       admin@campus.bg   admin123
-2   user        user@campus.bg    user123
+1   admin       admin@campus.bg   password
+2   user        user@campus.bg    password
 
 7.4 Тестови сценарии:
 
