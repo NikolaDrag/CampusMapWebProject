@@ -38,6 +38,35 @@ Campus Navigator е уеб приложение за навигация в ун�
 
 ---
 
+## Структура на проекта
+
+```
+ProjectWeb/
+├── index.html              - главна страница с карта
+├── login.php               - страница за вход
+├── register.php            - страница за регистрация
+├── README.md               - този файл
+├── DOKUMENTACIA.txt        - пълна документация
+├── css/
+│   ├── style.css           - основни стилове
+│   └── auth.css            - стилове за вход/регистрация
+├── js/
+│   ├── graph.js            - граф и Dijkstra алгоритъм
+│   ├── map.js              - Leaflet карта
+│   └── app.js              - приложна логика
+├── php/
+│   ├── config.php          - конфигурация
+│   ├── db.php              - функции за БД
+│   ├── api.php             - REST API
+│   └── auth.php            - автентикация
+├── sql/
+│   └── database.sql        - SQL скрипт
+└── data/
+    └── campus.json         - примерни данни
+```
+
+---
+
 ## Инструкции за пускане
 
 1. **Стартирайте XAMPP:** Apache + MySQL
