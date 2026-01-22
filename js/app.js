@@ -1,33 +1,9 @@
-/*
-    ОБЯСНЕНИЕ: app.js
-    
-    Това е ГЛАВНИЯТ файл, който свързва всичко заедно.
-    - Инициализира картата
-    - Зарежда примерни данни
-    - Добавя event listeners (реакции на бутони и т.н.)
-    - Управлява интерфейса
-*/
-
-// ========== ПРИМЕРНИ ДАННИ ЗА КАМПУСА ==========
-
-/*
-    ОБЯСНЕНИЕ:
-    Това са примерни данни за тестване.
-    В реален проект ще ги заредите от JSON файл или база данни.
-    
-    Координатите са реални (около ФМИ на СУ в София).
-    Можеш да ги промениш за твоя кампус!
-*/
-
 const sampleCampusData = {
-    // Центърът на кампуса (за инициализация на картата)
     center: {
         lat: 42.6933,
         lng: 23.3347,
         zoom: 17
     },
-    
-    // Възли (зали/сгради)
     "nodes": { 
         "FMI200": {
             "id": "FMI200",
@@ -38,7 +14,6 @@ const sampleCampusData = {
             "building": "ФМИ",
             "hidden": false
         },
-
         "FMI325": {
             "id": "FMI325",
             "name": "ФМИ - Зала 325 (Аудиториум)",
@@ -48,7 +23,6 @@ const sampleCampusData = {
             "building": "ФМИ",
             "hidden": false
         },
-
         "FMI314": {
             "id": "FMI314",
             "name": "ФМИ - Зала 314 (Компютърна зала)",
@@ -58,7 +32,6 @@ const sampleCampusData = {
             "building": "ФМИ",
             "hidden": false
         },
-
         "FMI100": {
             "id": "FMI100",
             "name": "ФМИ - Стая 100 (Бордови Игри)",
@@ -68,7 +41,6 @@ const sampleCampusData = {
             "building": "ФМИ",
             "hidden": false
         },
-
         "FMI01": {
             "id": "FMI01",
             "name": "ФМИ - Зала 01 (Лекционна зала)",
@@ -78,7 +50,6 @@ const sampleCampusData = {
             "building": "ФМИ",
             "hidden": false
         },
-
         "FRIZER": {
             "id": "FRIZER",
             "name": "ФЗФ - Фризер (Аудиториум)",
@@ -88,7 +59,6 @@ const sampleCampusData = {
             "building": "ФЗФ",
             "hidden": false
         },
-
         "FZFSTOL": {
             "id": "FZFSTOL",
             "name": "ФЗФ - Столова",
@@ -98,7 +68,6 @@ const sampleCampusData = {
             "building": "ФЗФ",
             "hidden": false
         },
-
         "FZF326B": {
             "id": "FZF326B",
             "name": "ФЗФ - Зала 326 (Лекционна зала)",
@@ -108,7 +77,6 @@ const sampleCampusData = {
             "building": "ФЗФ",
             "hidden": false
         },
-
         "KULATA": {
             "id": "KULATA",
             "name": "ФХФ - КУЛАТА (Място за развлечение)",
@@ -118,7 +86,6 @@ const sampleCampusData = {
             "building": "ФХФ",
             "hidden": false
         },
-
         "FHF210": {
             "id": "FHF210",
             "name": "ФХФ - Зала 210 (Аудиториум)",
@@ -128,7 +95,6 @@ const sampleCampusData = {
             "building": "ФХФ",
             "hidden": false
         },
-
         "FHF130": {
             "id": "FHF130",
             "name": "ФХФ - Зала 130 (Аудиториум)",
@@ -138,7 +104,6 @@ const sampleCampusData = {
             "building": "ФХФ",
             "hidden": false
         },
-
         "FHF610": {
             "id": "FHF610",
             "name": "ФХФ - Зала 610 (Лекционна зала)",
@@ -148,7 +113,6 @@ const sampleCampusData = {
             "building": "ФХФ",
             "hidden": false
         },
-         
         "REKTORAT605": {
             "id": "REKTORAT605",
             "name": "Ректорат - Зала 605 (Лекционна зала)",
@@ -158,7 +122,6 @@ const sampleCampusData = {
             "building": "Ректорат",
             "hidden": false
         },
-
         "MAMUT": {
             "id": "MAMUT",
             "name": "Ректорат - Скелет на мамут (Музей)",
@@ -168,7 +131,6 @@ const sampleCampusData = {
             "building": "Ректорат",
             "hidden": false
         },
-
         "LIB": {
             "id": "LIB",
             "name": "Ректорат - Библиотека",
@@ -178,7 +140,6 @@ const sampleCampusData = {
             "building": "Ректорат",
             "hidden": false
         },
-        
         "CAFE": {
             "id": "CAFE",
             "name": "Ректорат - Столова",
@@ -188,7 +149,6 @@ const sampleCampusData = {
             "building": "Ректорат",
             "hidden": false
         },
-        
         "FMI_VHOD": {
             "id": "FMI_VHOD",
             "name": "ФМИ - Вход",
@@ -196,7 +156,7 @@ const sampleCampusData = {
             "lng": 23.330413453347777,
             "floor": 1,
             "building": "ФМИ",
-            "hidden": false
+            "hidden": true
         },
         "FZF_VHOD": {
             "id": "FZF_VHOD",
@@ -205,7 +165,7 @@ const sampleCampusData = {
             "lng": 23.329798048598324,
             "floor": 1,
             "building": "ФЗФ",
-            "hidden": false
+            "hidden": true
         },
         "FHF_VHOD": {
             "id": "FHF_VHOD",
@@ -214,7 +174,7 @@ const sampleCampusData = {
             "lng": 23.333360530459398,
             "floor": 1,
             "building": "ФХФ",
-            "hidden": false
+            "hidden": true
         },
         "REKTORAT_VHOD": {
             "id": "REKTORAT_VHOD",
@@ -223,10 +183,9 @@ const sampleCampusData = {
             "lng": 23.334634860807206,
             "floor": 1,
             "building": "Ректорат",
-            "hidden": false
+            "hidden": true
         },
-        "FZF_FMI":
-        {
+        "FZF_FMI": {
             "id": "FZF_FMI",
             "name": "Пътека ФЗФ-ФМИ",
             "lat": 42.674330203001595,
@@ -248,29 +207,28 @@ const sampleCampusData = {
             "id": "FMI_FHF2",
             "name": "Пътека ФХФ-ФМИ",
             "lat": 42.67424836457649,
-            "lng":  23.33141190025043,
+            "lng": 23.33141190025043,
             "floor": 1,
             "building": "FMI-FHF Paths",
-            "hidden": false
+            "hidden": true
         },
         "FMI_FHF3": {
             "id": "FMI_FHF3",
             "name": "Пътека ФХФ-ФМИ",
-            "lat": 42.67412807173594, 
+            "lat": 42.67412807173594,
             "lng": 23.331873240175387,
             "floor": 1,
             "building": "FMI-FHF Paths",
-            "hidden":  false
-        },
+            "hidden": true
+        }
     },
     "edges": []
 };
 
-
 const nodeIds = Object.keys(sampleCampusData.nodes);
 
 function getDistance(node1, node2) {
-    const R = 6371e3; // Earth radius in meters
+    const R = 6371e3;
     const phi1 = node1.lat * Math.PI / 180;
     const phi2 = node2.lat * Math.PI / 180;
     const deltaPhi = (node2.lat - node1.lat) * Math.PI / 180;
@@ -281,36 +239,33 @@ function getDistance(node1, node2) {
               Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
     const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
 
-    return R * c; // Returns distance in meters
+    return R * c;
 }
 
 const nodesByBuilding = Object.values(sampleCampusData.nodes).reduce((acc, node) => {
     if (!acc[node.building]) {
         acc[node.building] = [];
     }
-
     acc[node.building].push(node);
     return acc;
 }, {});
 
 const newEdges = [];
 Object.entries(nodesByBuilding).forEach(([buildingName, rooms]) => {
-    
     for (let i = 0; i < rooms.length; i++) {
         for (let j = i + 1; j < rooms.length; j++) {
             const nodeA = rooms[i];
             const nodeB = rooms[j];
-            if(nodeA.id === "FMI_FHF1" && nodeB.id === "FMI_FHF3") continue;
-            if(nodeA.id === "FMI_FHF3" && nodeB.id === "FMI_FHF1") continue;
-            if(nodeA.id === "FHF130" && nodeB.id === "FHF210") continue;
-            if(nodeA.id === "FHF210" && nodeB.id === "FHF130") continue;
-            const dist = Math.round((getDistance(nodeA, nodeB)/1.38)/60); // ako vurvim s like 5km/h
+            if (nodeA.id === "FMI_FHF1" && nodeB.id === "FMI_FHF3") continue;
+            if (nodeA.id === "FMI_FHF3" && nodeB.id === "FMI_FHF1") continue;
+            if (nodeA.id === "FHF130" && nodeB.id === "FHF210") continue;
+            if (nodeA.id === "FHF210" && nodeB.id === "FHF130") continue;
+            const dist = Math.round((getDistance(nodeA, nodeB) / 1.38) / 60);
         
             newEdges.push({
                 source: nodeA.id,
                 target: nodeB.id,
-                distance: dist,
-                
+                distance: dist
             });
         }
     }
@@ -328,167 +283,131 @@ for (let i = 0; i < buildingNames.length; i++) {
         
         if (entranceA && entranceB) {
             if (entranceA.id === "FMI_VHOD" && entranceB.id === "FZF_VHOD") continue;
-            if(entranceA.id === "FZF_VHOD" && entranceB.id === "FMI_VHOD") continue;
-            if(entranceA.id === "FMI_VHOD" && entranceB.id === "FHF_VHOD") continue;
-            if(entranceA.id === "FHF_VHOD" && entranceB.id === "FMI_VHOD") continue;
-            if(entranceA.id === "FZF_VHOD" && entranceB.id === "FHF_VHOD") continue;
-            if(entranceA.id === "FHF_VHOD" && entranceB.id === "FZF_VHOD") continue;
+            if (entranceA.id === "FZF_VHOD" && entranceB.id === "FMI_VHOD") continue;
+            if (entranceA.id === "FMI_VHOD" && entranceB.id === "FHF_VHOD") continue;
+            if (entranceA.id === "FHF_VHOD" && entranceB.id === "FMI_VHOD") continue;
+            if (entranceA.id === "FZF_VHOD" && entranceB.id === "FHF_VHOD") continue;
+            if (entranceA.id === "FHF_VHOD" && entranceB.id === "FZF_VHOD") continue;
             
             const distMeters = getDistance(entranceA, entranceB);
-            
-            const travelTime = Math.round((distMeters / 1.38) / 60); 
+            const travelTime = Math.round((distMeters / 1.38) / 60);
 
             newEdges.push({
                 source: entranceA.id,
                 target: entranceB.id,
-                distance: travelTime, 
-                
+                distance: travelTime
             });
         }
     }
 }
+
 newEdges.push({
     source: "FMI_VHOD",
     target: "FZF_FMI",
-    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_VHOD"], sampleCampusData.nodes["FZF_FMI"])/1.38/60),
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_VHOD"], sampleCampusData.nodes["FZF_FMI"]) / 1.38 / 60)
 });
-console.log( getDistance(sampleCampusData.nodes["FMI_VHOD"], sampleCampusData.nodes["FZF_FMI"])/1.38/60, "DAAATAAAA")
+
 newEdges.push({
     source: "FZF_VHOD",
     target: "FZF_FMI",
-    distance: Math.round(getDistance(sampleCampusData.nodes["FZF_VHOD"], sampleCampusData.nodes["FZF_FMI"])/1.38/60),
+    distance: Math.round(getDistance(sampleCampusData.nodes["FZF_VHOD"], sampleCampusData.nodes["FZF_FMI"]) / 1.38 / 60)
 });
 
-// FMI - FHF PATHS
 newEdges.push({
     source: "FMI_VHOD",
     target: "FMI_FHF1",
-    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_VHOD"], sampleCampusData.nodes["FMI_FHF1"])/1.38/60),
-});newEdges.push({
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_VHOD"], sampleCampusData.nodes["FMI_FHF1"]) / 1.38 / 60)
+});
+
+newEdges.push({
     source: "FMI_FHF1",
     target: "FMI_VHOD",
-    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF1"], sampleCampusData.nodes["FMI_VHOD"])/1.38/60),
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF1"], sampleCampusData.nodes["FMI_VHOD"]) / 1.38 / 60)
+});
 
-
-});newEdges.push({
+newEdges.push({
     source: "FMI_FHF1",
     target: "FMI_FHF2",
-    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF1"], sampleCampusData.nodes["FMI_FHF2"])/1.38/60),
-});newEdges.push({
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF1"], sampleCampusData.nodes["FMI_FHF2"]) / 1.38 / 60)
+});
+
+newEdges.push({
     source: "FMI_FHF2",
     target: "FMI_FHF1",
-    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF2"], sampleCampusData.nodes["FMI_FHF1"])/1.38/60),
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF2"], sampleCampusData.nodes["FMI_FHF1"]) / 1.38 / 60)
+});
 
-});newEdges.push({
+newEdges.push({
     source: "FMI_FHF2",
     target: "FMI_FHF3",
-    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF2"], sampleCampusData.nodes["FMI_FHF3"])/1.38/60),
-});newEdges.push({
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF2"], sampleCampusData.nodes["FMI_FHF3"]) / 1.38 / 60)
+});
+
+newEdges.push({
     source: "FMI_FHF3",
     target: "FMI_FHF2",
-    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF3"], sampleCampusData.nodes["FMI_FHF2"])/1.38/60),
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF3"], sampleCampusData.nodes["FMI_FHF2"]) / 1.38 / 60)
+});
 
-
-});newEdges.push({
+newEdges.push({
     source: "FMI_FHF3",
     target: "FHF_VHOD",
-    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF3"], sampleCampusData.nodes["FHF_VHOD"])/1.38/60),
-});newEdges.push({
+    distance: Math.round(getDistance(sampleCampusData.nodes["FMI_FHF3"], sampleCampusData.nodes["FHF_VHOD"]) / 1.38 / 60)
+});
+
+newEdges.push({
     source: "FHF_VHOD",
     target: "FMI_FHF3",
-    distance: Math.round(getDistance(sampleCampusData.nodes["FHF_VHOD"], sampleCampusData.nodes["FMI_FHF3"])/1.38/60),
+    distance: Math.round(getDistance(sampleCampusData.nodes["FHF_VHOD"], sampleCampusData.nodes["FMI_FHF3"]) / 1.38 / 60)
 });
 
-// Update the object
 sampleCampusData.edges = newEdges;
-console.log(sampleCampusData.edges)
-console.log(`Generated ${sampleCampusData.edges.length} edges.`);
-// ========== ИНИЦИАЛИЗАЦИЯ ==========
 
-/*
-    ОБЯСНЕНИЕ:
-    DOMContentLoaded се изпълнява когато HTML-а е зареден.
-    Това гарантира, че всички елементи съществуват преди да ги използваме.
-*/
+let currentUser = null;
+let lastRoute = { from: null, to: null };
+
 document.addEventListener('DOMContentLoaded', function() {
-    console.log("=== Campus Navigator стартира ===");
-    
-    // Стъпка 1: Инициализираме картата
     initMap();
-    
-    // Стъпка 2: Зареждаме примерните данни
     loadSampleData();
-    
-    // Стъпка 3: Попълваме dropdown менютата
     populateDropdowns();
-    
-    // Стъпка 4: Добавяме event listeners
     setupEventListeners();
-    
-    // Стъпка 5: Проверяваме автентикацията (нова стъпка!)
     checkAuthStatus();
-    
-    console.log("=== Инициализацията завърши ===");
 });
-
-// ========== ФУНКЦИИ ЗА ИНИЦИАЛИЗАЦИЯ ==========
 
 function initMap() {
-    // Инициализираме картата с центъра на кампуса
     const center = sampleCampusData.center;
     campusMap.init(center.lat, center.lng, center.zoom);
 }
 
 function loadSampleData() {
-    // Зареждаме данните в графа
-    
-    // Добавяме възлите
     for (let id in sampleCampusData.nodes) {
         const node = sampleCampusData.nodes[id];
         campusGraph.addNode(id, node.name, node.lat, node.lng, node.floor, node.building, node.hidden);
         
-        // Добавяме маркер на картата за всеки възел
         const popupContent = `
             <strong>${node.name}</strong><br>
             Етаж: ${node.floor}<br>
             Сграда: ${node.building}
         `;
-        if(!node.hidden)
-            {
+        if (!node.hidden) {
             campusMap.addMarker(id, node.lat, node.lng, popupContent, 'blue');
         }
-        
     }
     
-    // Добавяме връзките
     for (let edge of sampleCampusData.edges) {
         campusGraph.addEdge(edge.source, edge.target, edge.distance);
     }
-    
-    console.log("Примерните данни са заредени");
 }
 
 function populateDropdowns() {
-    /*
-        ОБЯСНЕНИЕ:
-        Попълваме падащите менюта с опции от графа.
-    */
     const startSelect = document.getElementById('start-point');
     const endSelect = document.getElementById('end-point');
     
-    // Вземаме всички възли
     const nodes = campusGraph.getAllNodes();
     
-    // Добавяме опция за всеки възел
     nodes.forEach(node => {
-        console.log("NODE:", node.hidden);
-        if(node.hidden)
-            {
-                console.log("Hidden node skipped:", node.id);
-                return;
-                
-            }
-        // Създаваме нов option елемент
+        if (node.hidden) return;
+        
         const option1 = document.createElement('option');
         option1.value = node.id;
         option1.textContent = node.name;
@@ -497,50 +416,27 @@ function populateDropdowns() {
         option2.value = node.id;
         option2.textContent = node.name;
         
-        // Добавяме към двата select-а
         startSelect.appendChild(option1);
         endSelect.appendChild(option2);
     });
-    
-    console.log("Dropdown менютата са попълнени");
 }
 
 function setupEventListeners() {
-    
-    // Бутон "Намери път"
     document.getElementById('find-path-btn').addEventListener('click', findPath);
-    
-    // Бутони за експорт
     document.getElementById('export-json-btn').addEventListener('click', exportJSON);
     document.getElementById('export-csv-btn').addEventListener('click', exportCSV);
-    
-    // Бутон за импорт
     document.getElementById('import-btn').addEventListener('click', importData);
     
-    // Бутон "Добави към любими" (нов!)
     const addFavoriteBtn = document.getElementById('add-favorite-btn');
     if (addFavoriteBtn) {
         addFavoriteBtn.addEventListener('click', addFavorite);
     }
-    
-    console.log("Event listeners са настроени");
 }
 
-// ========== ОСНОВНИ ФУНКЦИИ ==========
-
 function findPath() {
-    /*
-        ОБЯСНЕНИЕ:
-        Тази функция се извиква при клик на бутона "Намери път".
-        1. Взима избраните стойности от dropdown-ите
-        2. Изпълнява Dijkstra алгоритъма
-        3. Показва резултата и рисува пътя на картата
-    */
-    
     const startId = document.getElementById('start-point').value;
     const endId = document.getElementById('end-point').value;
     
-    // Проверка дали са избрани и двете точки
     if (!startId || !endId) {
         alert('Моля, избери начална и крайна точка!');
         return;
@@ -551,26 +447,15 @@ function findPath() {
         return;
     }
     
-    console.log(`Търсене на път от ${startId} до ${endId}...`);
-    
-    // Изпълняваме Dijkstra
     const result = campusGraph.dijkstra(startId, endId);
-    
-    // Показваме резултата
     displayResult(result);
     
-    // Рисуваме пътя на картата
     if (result.path.length > 0) {
         drawPathOnMap(result.path);
     }
 }
 
 function displayResult(result) {
-    /*
-        ОБЯСНЕНИЕ:
-        Показва резултата от търсенето в #result секцията.
-    */
-    
     const resultText = document.getElementById('result-text');
     const resultDistance = document.getElementById('result-distance');
     
@@ -580,7 +465,6 @@ function displayResult(result) {
         return;
     }
     
-    // Форматираме пътя като текст
     const pathNames = result.path.map(id => {
         const node = campusGraph.getNode(id);
         return node ? node.name : id;
@@ -595,49 +479,22 @@ function displayResult(result) {
 }
 
 function drawPathOnMap(path) {
-    /*
-        ОБЯСНЕНИЕ:
-        Рисува линия на картата между точките в пътя.
-    */
-    
-    // Конвертираме id-та в координати
     const points = path.map(id => {
         const node = campusGraph.getNode(id);
-        return [node.lat, node.lng,node.building,];
+        return [node.lat, node.lng, node.building];
     });
 
-    // Рисуваме пътя
-    console.log("Рисуване на път на картата:", points);
     campusMap.drawFullRoute(points, '#e74c3c');
 }
 
-// ========== ЕКСПОРТ/ИМПОРТ ФУНКЦИИ ==========
-
 function exportJSON() {
-    /*
-        ОБЯСНЕНИЕ:
-        Експортира данните като JSON файл.
-        Създава временен линк за download.
-    */
-    
     const data = campusGraph.toJSON();
-    const jsonString = JSON.stringify(data, null, 2);  // null, 2 = красив формат
-    
-    // Създаваме файл за download
+    const jsonString = JSON.stringify(data, null, 2);
     downloadFile(jsonString, 'campus_data.json', 'application/json');
-    
-    console.log("Данните са експортирани като JSON");
 }
 
 function exportCSV() {
-    /*
-        ОБЯСНЕНИЕ:
-        Експортира данните като CSV файл.
-        CSV = Comma Separated Values (стойности разделени със запетая)
-    */
-    
-    // CSV за възлите
-    let csv = "id,name,lat,lng,floor,building\n";  // Header ред
+    let csv = "id,name,lat,lng,floor,building\n";
     
     const nodes = campusGraph.getAllNodes();
     nodes.forEach(node => {
@@ -646,24 +503,15 @@ function exportCSV() {
     
     downloadFile(csv, 'campus_nodes.csv', 'text/csv');
     
-    // CSV за връзките
     let edgesCsv = "from,to,weight\n";
     campusGraph.edges.forEach(edge => {
         edgesCsv += `${edge.from},${edge.to},${edge.weight}\n`;
     });
     
     downloadFile(edgesCsv, 'campus_edges.csv', 'text/csv');
-    
-    console.log("Данните са експортирани като CSV");
 }
 
 function downloadFile(content, filename, mimeType) {
-    /*
-        ОБЯСНЕНИЕ:
-        Помощна функция за download на файл.
-        Създава временен <a> елемент, кликва го и го премахва.
-    */
-    
     const blob = new Blob([content], { type: mimeType });
     const url = URL.createObjectURL(blob);
     
@@ -672,16 +520,10 @@ function downloadFile(content, filename, mimeType) {
     a.download = filename;
     a.click();
     
-    URL.revokeObjectURL(url);  // Освобождаваме паметта
+    URL.revokeObjectURL(url);
 }
 
 function importData() {
-    /*
-        ОБЯСНЕНИЕ:
-        Импортира данни от избран файл.
-        Поддържа JSON формат.
-    */
-    
     const fileInput = document.getElementById('import-file');
     const file = fileInput.files[0];
     
@@ -696,14 +538,10 @@ function importData() {
         try {
             const data = JSON.parse(e.target.result);
             
-            // Изчистваме текущите маркери
             campusMap.clearMarkers();
             campusMap.clearPath();
-            
-            // Зареждаме новите данни
             campusGraph.fromJSON(data);
             
-            // Добавяме маркери за новите възли
             const nodes = campusGraph.getAllNodes();
             nodes.forEach(node => {
                 const popupContent = `
@@ -714,15 +552,12 @@ function importData() {
                 campusMap.addMarker(node.id, node.lat, node.lng, popupContent);
             });
             
-            // Обновяваме dropdown-ите
             const startSelect = document.getElementById('start-point');
             const endSelect = document.getElementById('end-point');
             
-            // Изчистваме старите опции (оставяме първата)
             startSelect.innerHTML = '<option value="">-- Избери зала --</option>';
             endSelect.innerHTML = '<option value="">-- Избери зала --</option>';
             
-            // Добавяме новите
             populateDropdowns();
             
             alert('Данните са импортирани успешно!');
@@ -736,34 +571,7 @@ function importData() {
     reader.readAsText(file);
 }
 
-// ========== АВТЕНТИКАЦИЯ И ЛЮБИМИ МАРШРУТИ ==========
-
-/*
-    ОБЯСНЕНИЕ:
-    Тези функции управляват:
-    1. Проверка дали потребителят е логнат
-    2. Показване/скриване на съответните елементи
-    3. Зареждане на любими маршрути от базата
-    4. Добавяне/изтриване на любими маршрути
-*/
-
-// Глобална променлива за текущия потребител
-let currentUser = null;
-
-// Текущо избран маршрут (от последното търсене)
-let lastRoute = {
-    from: null,
-    to: null
-};
-
 function checkAuthStatus() {
-    /*
-        ОБЯСНЕНИЕ:
-        Проверява дали потребителят е логнат чрез AJAX заявка.
-        Ако е логнат - показва името му и бутон "Изход".
-        Ако не е - показва линкове за вход/регистрация.
-    */
-    
     fetch('php/api.php?action=check_auth')
         .then(response => response.json())
         .then(data => {
@@ -775,48 +583,26 @@ function checkAuthStatus() {
             const addFavoriteBtn = document.getElementById('add-favorite-btn');
             
             if (data.logged_in) {
-                // Потребителят е логнат
                 currentUser = data.user;
                 
-                // Скриваме линковете за вход/регистрация
                 if (authLinks) authLinks.style.display = 'none';
-                
-                // Показваме информация за потребителя
                 if (userInfo) userInfo.style.display = 'flex';
                 if (usernameSpan) usernameSpan.textContent = currentUser.username;
-                
-                // Показваме секцията с любими маршрути
                 if (favoritesSection) favoritesSection.style.display = 'block';
-                
-                // Показваме бутона за добавяне
                 if (addFavoriteBtn) addFavoriteBtn.style.display = 'block';
                 
-                // Зареждаме любимите маршрути
                 loadFavorites();
                 
-                // Добавяме event listener за logout
                 if (logoutBtn) {
                     logoutBtn.addEventListener('click', logout);
                 }
-                
-                console.log("Потребител логнат:", currentUser.username);
             } else {
-                // Потребителят НЕ е логнат
                 currentUser = null;
                 
-                // Показваме линковете за вход/регистрация
                 if (authLinks) authLinks.style.display = 'block';
-                
-                // Скриваме информация за потребителя
                 if (userInfo) userInfo.style.display = 'none';
-                
-                // Скриваме секцията с любими маршрути
                 if (favoritesSection) favoritesSection.style.display = 'none';
-                
-                // Скриваме бутона за добавяне
                 if (addFavoriteBtn) addFavoriteBtn.style.display = 'none';
-                
-                console.log("Няма логнат потребител");
             }
         })
         .catch(error => {
@@ -825,16 +611,7 @@ function checkAuthStatus() {
 }
 
 function loadFavorites() {
-    /*
-        ОБЯСНЕНИЕ:
-        Зарежда любимите маршрути на потребителя от базата данни.
-        Използва GET заявка към API-то.
-    */
-    
-    if (!currentUser) {
-        console.log("Не може да се заредят любими - няма логнат потребител");
-        return;
-    }
+    if (!currentUser) return;
     
     fetch('php/api.php?action=get_favorites')
         .then(response => response.json())
@@ -843,11 +620,9 @@ function loadFavorites() {
             
             if (!favoritesList) return;
             
-            // Изчистваме списъка
             favoritesList.innerHTML = '';
             
             if (data.success && data.favorites && data.favorites.length > 0) {
-                // Добавяме всеки любим маршрут
                 data.favorites.forEach(fav => {
                     const li = document.createElement('li');
                     li.innerHTML = `
@@ -866,10 +641,7 @@ function loadFavorites() {
                     `;
                     favoritesList.appendChild(li);
                 });
-                
-                console.log("Заредени любими маршрути:", data.favorites.length);
             } else {
-                // Няма любими маршрути
                 favoritesList.innerHTML = '<li class="no-favorites">Нямаш любими маршрути</li>';
             }
         })
@@ -918,10 +690,7 @@ function addFavorite() {
         method: 'POST',
         body: formData
     })
-    .then(response => {
-        console.log('HTTP Status:', response.status);
-        return response.text();
-    })
+    .then(response => response.text())
     .then(text => {
         let data;
         try {
@@ -932,7 +701,6 @@ function addFavorite() {
         }
 
         if (data.success) {
-            console.log('Маршрутът е добавен към любимите!');
             loadFavorites();
         } else {
             alert('Грешка: ' + (data.error || 'Неизвестна грешка'));
@@ -944,12 +712,6 @@ function addFavorite() {
 }
 
 function deleteFavorite(favoriteId) {
-    /*
-        ОБЯСНЕНИЕ:
-        Изтрива любим маршрут от базата данни.
-        Показва потвърждение преди изтриване.
-    */
-    
     if (!currentUser) {
         alert('Трябва да влезеш в профила си!');
         return;
@@ -966,10 +728,7 @@ function deleteFavorite(favoriteId) {
         method: 'POST',
         body: formData
     })
-    .then(response => {
-        console.log('HTTP Status:', response.status);
-        return response.text();
-    })
+    .then(response => response.text())
     .then(text => {
         let data;
         try {
@@ -980,7 +739,6 @@ function deleteFavorite(favoriteId) {
         }
 
         if (data.success) {
-            console.log('Любим маршрут изтрит');
             loadFavorites();
         } else {
             alert('Грешка: ' + (data.error || 'Неизвестна грешка'));
@@ -992,35 +750,21 @@ function deleteFavorite(favoriteId) {
 }
 
 function useFavorite(nodeFrom, nodeTo) {
-    /*
-        ОБЯСНЕНИЕ:
-        Използва любим маршрут - избира точките и търси пътя.
-    */
-    
     const startSelect = document.getElementById('start-point');
     const endSelect = document.getElementById('end-point');
     
-    // Избираме точките в dropdown-ите
     startSelect.value = nodeFrom;
     endSelect.value = nodeTo;
     
-    // Търсим пътя
     findPath();
 }
 
 function logout() {
-    /*
-        ОБЯСНЕНИЕ:
-        Излизане от профила.
-        Изпраща заявка към auth.php и презарежда страницата.
-    */
-    
     fetch('php/auth.php?action=logout')
         .then(response => response.json())
         .then(data => {
             if (data.success) {
                 currentUser = null;
-                // Презареждаме страницата за да се обновят всички елементи
                 window.location.reload();
             } else {
                 alert('Грешка при излизане!');
@@ -1028,21 +772,12 @@ function logout() {
         })
         .catch(error => {
             console.error("Грешка при logout:", error);
-            // При грешка все пак презареждаме
             window.location.reload();
         });
 }
 
 function escapeHtml(text) {
-    /*
-        ОБЯСНЕНИЕ:
-        Помощна функция за escape на HTML специални символи.
-        Предпазва от XSS атаки.
-    */
-    
     const div = document.createElement('div');
     div.textContent = text;
     return div.innerHTML;
 }
-
-console.log("app.js зареден успешно!");

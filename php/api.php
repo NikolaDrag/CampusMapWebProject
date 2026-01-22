@@ -1,34 +1,19 @@
 <?php
-
-/**
- * api.php - REST API за работа със зали и връзки
- * 
- * Този файл обработва AJAX заявки от JavaScript.
- * Поддържа GET, POST, PUT, DELETE методи.
- */
-
-// Стартираме сесията (важно за проверка на автентикация)
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
 require_once 'db.php';
 
-// Задаваме JSON header
 header('Content-Type: application/json; charset=utf-8');
 
-// Вземаме HTTP метода и действието
 $method = $_SERVER['REQUEST_METHOD'];
 $action = isset($_GET['action']) ? $_GET['action'] : '';
 
-// Обработваме заявката според метода и действието
 try {
     switch ($action) {
         
-        // ==================== АВТЕНТИКАЦИЯ ====================
-        
         case 'check_auth':
-            // Проверка дали потребителят е логнат
             require_once 'auth.php';
             
             if (isLoggedIn()) {
@@ -44,16 +29,12 @@ try {
             }
             break;
         
-        // ==================== ЗАЛИ (NODES) ====================
-        
         case 'get_nodes':
-            // SELECT - Вземане на всички зали
             $nodes = dbSelect("SELECT * FROM nodes ORDER BY name");
             echo json_encode(['success' => true, 'data' => $nodes]);
             break;
             
         case 'get_node':
-            // SELECT - Вземане на една зала по ID
             $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
             $node = dbSelectOne("SELECT * FROM nodes WHERE id = ?", [$id]);
             if ($node) {
@@ -64,24 +45,20 @@ try {
             break;
             
         case 'add_node':
-            // INSERT - Добавяне на нова зала
             if ($method !== 'POST') {
                 throw new Exception('Невалиден метод');
             }
             
-            // Вземаме данните от POST
             $name = isset($_POST['name']) ? trim($_POST['name']) : '';
             $lat = isset($_POST['lat']) ? floatval($_POST['lat']) : 0;
             $lng = isset($_POST['lng']) ? floatval($_POST['lng']) : 0;
             $floor = isset($_POST['floor']) ? intval($_POST['floor']) : 1;
             $building = isset($_POST['building']) ? trim($_POST['building']) : '';
             
-            // Валидация
             if (empty($name) || $lat == 0 || $lng == 0) {
                 throw new Exception('Моля попълнете всички задължителни полета');
             }
             
-            // INSERT заявка
             $sql = "INSERT INTO nodes (name, lat, lng, floor, building) VALUES (?, ?, ?, ?, ?)";
             $id = dbInsert($sql, [$name, $lat, $lng, $floor, $building]);
             
@@ -89,7 +66,6 @@ try {
             break;
             
         case 'update_node':
-            // UPDATE - Редактиране на зала
             if ($method !== 'POST') {
                 throw new Exception('Невалиден метод');
             }
@@ -105,7 +81,6 @@ try {
                 throw new Exception('Невалидни данни');
             }
             
-            // UPDATE заявка
             $sql = "UPDATE nodes SET name = ?, lat = ?, lng = ?, floor = ?, building = ? WHERE id = ?";
             $affected = dbUpdate($sql, [$name, $lat, $lng, $floor, $building, $id]);
             
@@ -113,7 +88,6 @@ try {
             break;
             
         case 'delete_node':
-            // DELETE - Изтриване на зала
             if ($method !== 'POST') {
                 throw new Exception('Невалиден метод');
             }
@@ -124,20 +98,15 @@ try {
                 throw new Exception('Невалидно ID');
             }
             
-            // Първо изтриваме свързаните връзки
             dbDelete("DELETE FROM edges WHERE node_from = ? OR node_to = ?", [$id, $id]);
             
-            // После изтриваме залата
             $sql = "DELETE FROM nodes WHERE id = ?";
             $affected = dbDelete($sql, [$id]);
             
             echo json_encode(['success' => true, 'affected' => $affected, 'message' => 'Залата е изтрита']);
             break;
-            
-        // ==================== ВРЪЗКИ (EDGES) ====================
         
         case 'get_edges':
-            // SELECT - Вземане на всички връзки
             $edges = dbSelect("
                 SELECT e.*, 
                        n1.name as from_name, 
@@ -151,7 +120,6 @@ try {
             break;
             
         case 'add_edge':
-            // INSERT - Добавяне на връзка
             if ($method !== 'POST') {
                 throw new Exception('Невалиден метод');
             }
@@ -164,7 +132,6 @@ try {
                 throw new Exception('Невалидни данни за връзка');
             }
             
-            // INSERT заявка
             $sql = "INSERT INTO edges (node_from, node_to, weight) VALUES (?, ?, ?)";
             $id = dbInsert($sql, [$node_from, $node_to, $weight]);
             
@@ -172,7 +139,6 @@ try {
             break;
             
         case 'delete_edge':
-            // DELETE - Изтриване на връзка
             if ($method !== 'POST') {
                 throw new Exception('Невалиден метод');
             }
@@ -188,11 +154,8 @@ try {
             
             echo json_encode(['success' => true, 'affected' => $affected, 'message' => 'Връзката е изтрита']);
             break;
-            
-        // ==================== ЕКСПОРТ ====================
         
         case 'export':
-            // Експорт на всички данни като JSON
             $nodes = dbSelect("SELECT * FROM nodes");
             $edges = dbSelect("SELECT * FROM edges");
             
@@ -204,11 +167,8 @@ try {
                 ]
             ]);
             break;
-            
-        // ==================== ЛЮБИМИ МАРШРУТИ (FAVORITES) ====================
         
         case 'get_favorites':
-            // SELECT - Вземане на любими маршрути за текущия потребител
             require_once 'auth.php';
             
             if (!isLoggedIn()) {
@@ -230,7 +190,6 @@ try {
             break;
             
         case 'add_favorite':
-            // INSERT - Добавяне на любим маршрут
             require_once 'auth.php';
             
             if ($method !== 'POST') {
@@ -242,7 +201,6 @@ try {
             }
             
             $user_id = $_SESSION['user_id'];
-            // Използваме string стойности за node_from/node_to (JavaScript IDs)
             $node_from = isset($_POST['node_from']) ? trim($_POST['node_from']) : '';
             $node_to = isset($_POST['node_to']) ? trim($_POST['node_to']) : '';
             $name = isset($_POST['name']) ? trim($_POST['name']) : '';
@@ -251,7 +209,6 @@ try {
                 throw new Exception('Невалидни данни за маршрут');
             }
             
-            // Проверка дали вече съществува
             $existing = dbSelectOne(
                 "SELECT id FROM favorites WHERE user_id = ? AND node_from = ? AND node_to = ?",
                 [$user_id, $node_from, $node_to]
@@ -261,7 +218,6 @@ try {
                 throw new Exception('Този маршрут вече е в любими');
             }
             
-            // INSERT заявка
             $sql = "INSERT INTO favorites (user_id, node_from, node_to, name) VALUES (?, ?, ?, ?)";
             $id = dbInsert($sql, [$user_id, $node_from, $node_to, $name]);
             
@@ -269,7 +225,6 @@ try {
             break;
             
         case 'delete_favorite':
-            // DELETE - Изтриване на любим маршрут
             require_once 'auth.php';
             
             if ($method !== 'POST') {
@@ -287,7 +242,6 @@ try {
                 throw new Exception('Невалидно ID');
             }
             
-            // DELETE само ако принадлежи на текущия потребител
             $sql = "DELETE FROM favorites WHERE id = ? AND user_id = ?";
             $affected = dbDelete($sql, [$id, $user_id]);
             
@@ -298,34 +252,12 @@ try {
             }
             break;
             
-        // ==================== ПРОВЕРКА НА АВТЕНТИКАЦИЯ ====================
-        
-        case 'check_auth':
-            // Проверка дали потребителят е логнат
-            require_once 'auth.php';
-            
-            if (isLoggedIn()) {
-                $user = getCurrentUser();
-                echo json_encode([
-                    'logged_in' => true,
-                    'user' => [
-                        'id' => $user['id'],
-                        'username' => $user['username'],
-                        'email' => $user['email']
-                    ]
-                ]);
-            } else {
-                echo json_encode(['logged_in' => false]);
-            }
-            break;
-            
         default:
-            echo json_encode(['success' => false, 'error' => 'Непозната команда '.$action]);
+            echo json_encode(['success' => false, 'error' => 'Непозната команда']);
             break;
     }
     
 } catch (Exception $e) {
-    // При грешка връщаме JSON с грешката
     http_response_code(400);
     echo json_encode(['success' => false, 'error' => $e->getMessage()]);
 }

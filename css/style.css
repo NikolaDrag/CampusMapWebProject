@@ -1,15 +1,7 @@
-/*
-    ОБЯСНЕНИЕ: CSS стилове за проекта.
-    Организирани са по секции за лесно четене.
-*/
-
-/* ========== ОСНОВНИ СТИЛОВЕ ========== */
-
-/* Reset - премахва default margins/paddings */
 * {
     margin: 0;
     padding: 0;
-    box-sizing: border-box; /* По-лесно изчисляване на размери */
+    box-sizing: border-box;
 }
 
 body {
@@ -17,8 +9,6 @@ body {
     background-color: #f5f5f5;
     color: #333;
 }
-
-/* ========== HEADER ========== */
 
 header {
     background-color: #2c3e50;
@@ -89,17 +79,13 @@ header {
     background-color: #c0392b;
 }
 
-/* ========== MAIN LAYOUT ========== */
-
 main {
-    display: flex; /* Flexbox - подрежда елементите в ред */
-    height: calc(100vh - 80px); /* Височина = екран минус header */
+    display: flex;
+    height: calc(100vh - 80px);
 }
 
-/* ========== КАРТА ========== */
-
 #map-container {
-    flex: 2; /* Заема 2 части от пространството */
+    flex: 2;
     position: relative;
 }
 
@@ -108,14 +94,12 @@ main {
     height: 100%;
 }
 
-/* ========== КОНТРОЛЕН ПАНЕЛ ========== */
-
 #control-panel {
-    flex: 1; /* Заема 1 част от пространството */
+    flex: 1;
     background-color: white;
     padding: 20px;
-    overflow-y: auto; /* Скролиране ако има много съдържание */
-    box-shadow: -2px 0 5px rgba(0,0,0,0.1); /* Сянка отляво */
+    overflow-y: auto;
+    box-shadow: -2px 0 5px rgba(0,0,0,0.1);
 }
 
 #control-panel h2 {
@@ -124,14 +108,12 @@ main {
     font-size: 18px;
 }
 
-/* ========== ФОРМА ЕЛЕМЕНТИ ========== */
-
 .form-group {
     margin-bottom: 15px;
 }
 
 .form-group label {
-    display: block; /* На нов ред */
+    display: block;
     margin-bottom: 5px;
     font-weight: bold;
     font-size: 14px;
@@ -145,8 +127,6 @@ main {
     font-size: 14px;
 }
 
-/* ========== БУТОНИ ========== */
-
 button {
     width: 100%;
     padding: 12px;
@@ -154,22 +134,22 @@ button {
     border: none;
     border-radius: 5px;
     font-size: 14px;
-    cursor: pointer; /* Показва ръчичка при hover */
-    transition: background-color 0.3s; /* Плавна анимация */
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
 #find-path-btn {
-    background-color: #27ae60; /* Зелено */
+    background-color: #27ae60;
     color: white;
 }
 
 #find-path-btn:hover {
-    background-color: #219a52; /* По-тъмно при hover */
+    background-color: #219a52;
 }
 
 #export-json-btn,
 #export-csv-btn {
-    background-color: #3498db; /* Синьо */
+    background-color: #3498db;
     color: white;
 }
 
@@ -179,7 +159,7 @@ button {
 }
 
 #import-btn {
-    background-color: #9b59b6; /* Лилаво */
+    background-color: #9b59b6;
     color: white;
 }
 
@@ -187,15 +167,11 @@ button {
     background-color: #8e44ad;
 }
 
-/* ========== INPUT FILE ========== */
-
 input[type="file"] {
     width: 100%;
     margin-bottom: 10px;
     font-size: 12px;
 }
-
-/* ========== РЕЗУЛТАТ ========== */
 
 #result {
     margin-top: 20px;
@@ -222,15 +198,11 @@ input[type="file"] {
     margin-top: 10px;
 }
 
-/* ========== РАЗДЕЛИТЕЛ ========== */
-
 hr {
     border: none;
     border-top: 1px solid #ddd;
     margin: 20px 0;
 }
-
-/* ========== ЛЮБИМИ МАРШРУТИ ========== */
 
 #favorites-section {
     margin-top: 10px;

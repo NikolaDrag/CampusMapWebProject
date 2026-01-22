@@ -1,8 +1,3 @@
-/*
-    auth.css - Стилове за страниците за вход и регистрация
-*/
-
-/* Контейнер - центрира формата */
 .auth-container {
     min-height: 100vh;
     display: flex;
@@ -12,7 +7,6 @@
     padding: 20px;
 }
 
-/* Кутия с формата */
 .auth-box {
     background: white;
     padding: 40px;
@@ -37,7 +31,6 @@
     font-weight: normal;
 }
 
-/* Групи на формата */
 .auth-box .form-group {
     margin-bottom: 20px;
 }
@@ -68,7 +61,6 @@
     color: #bdc3c7;
 }
 
-/* Бутон */
 .btn-primary {
     width: 100%;
     padding: 14px;
@@ -85,7 +77,6 @@
     background-color: #219a52;
 }
 
-/* Линкове */
 .auth-link {
     text-align: center;
     margin-top: 20px;
@@ -101,7 +92,6 @@
     text-decoration: underline;
 }
 
-/* Съобщения */
 .message {
     padding: 12px 15px;
     border-radius: 5px;
