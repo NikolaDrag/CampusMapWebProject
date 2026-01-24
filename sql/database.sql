@@ -12,17 +12,13 @@ COLLATE utf8mb4_unicode_ci;
 -- Избиране на базата данни
 USE campus_navigator;
 
--- =====================================================
--- DROP таблици (ако съществуват) - в правилен ред заради FK
--- =====================================================
+DROP TABLE IF EXISTS buildings;
 DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS edges;
 DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS users;
 
--- =====================================================
--- CREATE TABLE: users - Потребители на системата
--- =====================================================
+
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -35,25 +31,43 @@ CREATE TABLE users (
     INDEX idx_email (email)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- =====================================================
--- CREATE TABLE: nodes - Зали/Локации в кампуса
--- =====================================================
+
+CREATE TABLE buildings (
+    id varchar(255) PRIMARY KEY,
+    name varchar(32) UNIQUE NOT NULL,
+    building_part varchar(8),
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+
 CREATE TABLE nodes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
     lat DECIMAL(10, 7) NOT NULL,
     lng DECIMAL(10, 7) NOT NULL,
     floor INT DEFAULT 1,
-    building VARCHAR(100) DEFAULT '',
+    building_id VARCHAR(100) DEFAULT '',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    
-    INDEX idx_building (building),
+    hidden BOOLEAN DEFAULT False,
+    connection BOOLEAN DEFAULT true,
+    connection_from INT NULL,
+    connection_to INT NULL,
+
+    FOREIGN KEY (connection_from) REFERENCES nodes(id) ON DELETE CASCADE,
+    FOREIGN KEY (connection_to) REFERENCES nodes(id) ON DELETE CASCADE,
+
+    CONSTRAINT chk_connection_fields
+        CHECK (
+            connection = FALSE
+            OR ((connection_from IS NOT NULL OR connection_to IS NOT NULL) AND connection_from <> connection_to)
+        ),
+
+    FOREIGN KEY (building_id) REFERENCES buildings(id) ON DELETE CASCADE,
+
+    INDEX idx_building (building_id),
     INDEX idx_coords (lat, lng)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- =====================================================
--- CREATE TABLE: edges - Връзки между зали (пътища)
--- =====================================================
+
 CREATE TABLE edges (
     id INT AUTO_INCREMENT PRIMARY KEY,
     node_from INT NOT NULL,
@@ -68,11 +82,7 @@ CREATE TABLE edges (
     INDEX idx_to (node_to)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- =====================================================
--- CREATE TABLE: favorites - Любими маршрути на потребителите
--- ЗАБЕЛЕЖКА: node_from и node_to са VARCHAR защото в JavaScript
--- използваме string IDs (като "FMI200"), не числови от базата
--- =====================================================
+
 CREATE TABLE favorites (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -87,34 +97,48 @@ CREATE TABLE favorites (
     UNIQUE KEY unique_favorite (user_id, node_from, node_to)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
--- =====================================================
--- INSERT INTO users: Примерни потребители
--- Парола за всички: password (хеширана с password_hash)
--- =====================================================
+
 INSERT INTO users (username, email, password_hash) VALUES
 ('admin', 'admin@campus.bg', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
 ('user', 'user@campus.bg', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi');
 
--- =====================================================
--- INSERT INTO nodes: Зали/локации от app.js (реални координати от кампуса)
--- =====================================================
-INSERT INTO nodes (id, name, lat, lng, floor, building) VALUES
-(1, 'ФМИ - Зала 200 (Аудиториум)', 42.67446134, 23.33070514, 2, 'ФМИ'),
-(2, 'ФМИ - Зала 325 (Аудиториум)', 42.67430457, 23.33029208, 3, 'ФМИ'),
-(3, 'ФМИ - Зала 314 (Компютърна зала)', 42.67428879, 23.33039803, 3, 'ФМИ'),
-(4, 'ФМИ - Стая 100 (Бордови Игри)', 42.67453529, 23.33085534, 1, 'ФМИ'),
-(5, 'ФМИ - Зала 01 (Лекционна зала)', 42.67433513, 23.33073867, -1, 'ФМИ'),
-(6, 'ФЗФ - Фризер (Аудиториум)', 42.67361140, 23.32991389, 3, 'Корпус А'),
-(7, 'ФЗФ - Столова', 42.67363507, 23.32879272, 1, 'ФЗФ - Столова'),
-(8, 'ФЗФ - Зала 326 (Лекционна зала)', 42.67385002, 23.32906363, 1, 'Корпус B'),
-(9, 'ФХФ - КУЛАТА (Място за развлечение)', 42.67462485, 23.33260736, 8, 'ФХФ'),
-(10, 'ФХФ - Зала 210 (Аудиториум)', 42.67436060, 23.33361587, 2, 'ФХФ'),
-(11, 'ФХФ - Зала 130 (Аудиториум)', 42.67453907, 23.33346566, 1, 'ФХФ'),
-(12, 'ФХФ - Зала 610 (Лекционна зала)', 42.67454597, 23.33257517, 6, 'ФХФ'),
-(13, 'Ректорат - Зала 605 (Лекционна зала)', 42.69309189, 23.33544757, 6, 'Корпус А'),
-(14, 'Ректорат - Скелет на мамут (Музей)', 42.69421164, 23.33495136, 6, 'Музей по палеонтология и исторична геология'),
-(15, 'Ректорат - Библиотека', 42.69359657, 23.33576139, 1, 'Корпус Б'),
-(16, 'Ректорат - Столова', 42.6935000, 23.3330000, 0, 'Централна');
+INSERT INTO buildings (id, name, building_part) VALUES
+("RECTORATE A", "RECTORATE", "A"),
+("RECTORATE B", "RECTORATE", "B"),
+("FMI", "FMI", NULL),
+("FZF A", "FZF", "A"),
+("FZF B", "FZF", "B"),
+("FHF A", "FHF", "A"),
+("FHF B", "FHF", "B"),
+("FMI-FHF-PATH", "FMI-FHF-PATH", NULL),
+("FMI-FZF-PATH", "FMI-FZF-PATH", NULL);
+
+INSERT INTO nodes (id, name, lat, lng, floor, building_id, hidden, connection, connection_from, connection_to) VALUES
+(1, 'ФМИ - Зала 200 (Аудиториум)', 42.67446134, 23.33070514, 2, 'FMI', 0, 0, NULL, NULL),
+(2, 'ФМИ - Зала 325 (Аудиториум)', 42.67430457, 23.33029208, 3, 'FMI', 0, 0, NULL, NULL),
+(3, 'ФМИ - Зала 314 (Компютърна зала)', 42.67428879, 23.33039803, 3, 'FMI', 0, 0, NULL, NULL),
+(4, 'ФМИ - Стая 100 (Бордови Игри)', 42.67453529, 23.33085534, 1, 'FMI', 0, 0, NULL, NULL),
+(5, 'ФМИ - Зала 01 (Лекционна зала)', 42.67433513, 23.33073867, -1, 'FMI', 0, 0, NULL, NULL),
+(6, 'ФЗФ - Зала 207 (Фризер)', 42.67361140, 23.32991389, 3, 'FZF A', 0, 0, NULL, NULL),
+(7, 'ФЗФ - Столова', 42.67363507, 23.32879272, 1, 'FZF B', 0, 0, NULL, NULL),
+(8, 'ФЗФ - Зала 326 (Лекционна зала)', 42.67385002, 23.32906363, 1, 'FZF B', 0, 0, NULL, NULL),
+(9, 'ФХФ - КУЛАТА (Място за развлечение)', 42.67462485, 23.33260736, 8, 'FHF B', 0, 0, NULL, NULL),
+(10, 'ФХФ - Зала 210 (Аудиториум)', 42.67436060, 23.33361587, 2, 'FHF A', 0, 0, NULL, NULL),
+(11, 'ФХФ - Зала 130 (Аудиториум)', 42.67453907, 23.33346566, 1, 'FHF A', 0, 0, NULL, NULL),
+(12, 'ФХФ - Зала 610 (Лекционна зала)', 42.67454597, 23.33257517, 6, 'FHF B', 0, 0, NULL, NULL),
+(13, 'Ректорат - Зала 605 (Лекционна зала)', 42.69309189, 23.33544757, 6, 'RECTORATE A', 0, 0, NULL, NULL),
+(14, 'Ректорат - палеонтоложки музей (Скелет на мамут)', 42.69421164, 23.33495136, 6, 'RECTORATE A', 0, 0, NULL, NULL),
+(15, 'Ректорат - Библиотека', 42.69359657, 23.33576139, 1, 'RECTORATE A', 0, 0, NULL, NULL),
+(16, 'Ректорат - Столова', 42.6935000, 23.3330000, 0, 'RECTORATE B', 0, 0, NULL, NULL),
+(17, 'ФМИ - Вход', 42.67450347360084, 23.330413453347777, 1, 'FMI', 1, 0, NULL, NULL),
+(18, 'ФЗФ - Вход', 42.67393156529344, 23.329798048598324, 1, 'FZF A', 1, 0, NULL, NULL),
+(19, 'ФХФ - Вход', 42.6747287746268, 23.333360530459398, 1, 'FHF B', 1, 0, NULL, NULL),
+(20, 'Ректорат - Вход', 42.693521658007015, 23.334634860807206, 1, 'RECTORATE B', 1, 1, 16, NULL),
+(21, 'Пътека ФЗФ-ФМИ', 42.674330203001595, 23.329892428871545, 1, 'FMI-FZF-PATH', 1, 1, 17, 18),
+(22, 'Пътека ФХФ-ФМИ-1', 42.67464966768705, 23.331000181169276, 1, 'FMI-FHF-PATH', 1, 1, 17, NULL),
+(23, 'Пътека ФХФ-ФМИ-2', 42.67424836457649, 23.33141190025043, 1, 'FMI-FHF-PATH', 1, 0, NULL, NULL),
+(24, 'Пътека ФХФ-ФМИ-3', 42.67412807173594, 23.331873240175387, 1, 'FMI-FHF-PATH', 1, 1, 19, NULL);
+
 
 -- =====================================================
 -- INSERT INTO edges: Връзки между залите (генерирани автоматично)

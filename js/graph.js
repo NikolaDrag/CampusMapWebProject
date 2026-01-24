@@ -1,22 +1,27 @@
 class CampusGraph {
-    
+
     constructor() {
         this.nodes = {};
         this.edges = [];
         this.adjacencyList = {};
     }
 
-    addNode(id, name, lat, lng, floor = 1, building = "Главна", hidden = false) {
+    addNode(id, name, lat, lng, building_name = null, building_part = null, floor = 1, hidden = false, 
+                is_connection = false, connection_from = null, connection_to = null) {
         this.nodes[id] = {
             id: id,
             name: name,
             lat: lat,
             lng: lng,
             floor: floor,
-            building: building,
-            hidden: hidden
+            building_name: building_name,
+            building_part: building_part,
+            hidden: hidden,
+            is_connection: is_connection,
+            connection_from: connection_from,
+            connection_to: connection_to
         };
-        
+
         if (!this.adjacencyList[id]) {
             this.adjacencyList[id] = {};
         }
@@ -36,7 +41,8 @@ class CampusGraph {
         }
     }
 
-    dijkstra(startId, endId) {
+    // speed - speed in km/h
+    dijkstra(startId, endId, speed = 4) {
         const distances = {};
         const previous = {};
         const visited = {};
@@ -89,6 +95,9 @@ class CampusGraph {
             };
         }
 
+        // from meters to minutes based on speed
+        console.log(distances[endId] / 1000);
+        distances[endId] = (distances[endId] * 60 ) / (1000 * speed);
         return {
             path: path,
             distance: distances[endId],
@@ -128,3 +137,57 @@ class CampusGraph {
 }
 
 const campusGraph = new CampusGraph();
+
+// intentionallly outside the class
+function loadGraphEdges() {
+    nodes = campusGraph.nodes;
+
+    // can be implemented faster but for the current number of building thats enough
+    for (let id_a in nodes) {
+        let node_a = nodes[id_a];
+        for (let id_b in nodes) {
+            let node_b = nodes[id_b];
+
+            if (id_a === id_b || 
+                (node_a.building_name !== node_b.building_name && !node_a.is_connection)) {
+                continue;
+            }
+
+            if (node_a.is_connection) {
+                if (node_a.connection_to === node_b.id) {
+                    campusGraph.addEdge(node_a.id, node_b.id, getDistance(node_a, node_b));
+                } else if (node_a.connection_from === node_b.id) {
+                    campusGraph.addEdge(node_a.id, node_b.id, getDistance(node_a, node_b));
+                }
+            }
+            
+            if(node_a.building_name === node_b.building_name) {
+                campusGraph.addEdge(node_a.id, node_b.id, getDistance(node_a, node_b));
+            }
+        }
+}
+
+    
+    // no idea how to fix this
+    // some better way of specifying "special" edges should be implement in the database
+    // it's all good if Milen Petrov не разбере🍆
+    try {
+        campusGraph.addEdge(17, 20, getDistance(nodes[17], nodes[20]));
+    } catch (error) {}
+}
+
+// returns distance in meters
+function getDistance(node1, node2) {
+    const R = 6371e3;
+    const phi1 = node1.lat * Math.PI / 180;
+    const phi2 = node2.lat * Math.PI / 180;
+    const deltaPhi = (node2.lat - node1.lat) * Math.PI / 180;
+    const deltaLambda = (node2.lng - node1.lng) * Math.PI / 180;
+
+    const a = Math.sin(deltaPhi / 2) * Math.sin(deltaPhi / 2) +
+              Math.cos(phi1) * Math.cos(phi2) *
+              Math.sin(deltaLambda / 2) * Math.sin(deltaLambda / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+
+    return R * c;
+}

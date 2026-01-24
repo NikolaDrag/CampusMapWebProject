@@ -83,11 +83,10 @@ class CampusMap {
                 L.latLng(start[0], start[1]),
                 L.latLng(end[0], end[1])
             ];
-
-            if (((start[2] === "ФМИ" && end[2] === "FMI-FZF Paths") || (start[2] === "FMI-FZF Paths" && end[2] === "ФЗФ")) ||
-                ((start[2] === "ФЗФ" && end[2] === "FMI-FZF Paths") || (start[2] === "FMI-FZF Paths" && end[2] === "ФМИ")) ||
-                ((start[2] === "ФМИ" && end[2] === "FMI-FHF Paths") || (start[2] === "FMI-FHF Paths" && end[2] === "ФХФ")) ||
-                ((start[2] === "ФХФ" && end[2] === "FMI-FHF Paths") || (start[2] === "FMI-FHF Paths" && end[2] === "ФМИ"))) {
+            
+            // check FMI entrance and Rectorate entrance as they are the main exit points of the campus
+            // boolean indicator for exit point should be added in the database!!!
+            if (!((start[2] == 17 && end[2] == 20) || (start[2] == 20 && end[2] == 17))) {
                 const polyline = L.polyline(waypoints, {
                     color: color,
                     weight: 5,

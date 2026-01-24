@@ -33,6 +33,13 @@ try {
             $nodes = dbSelect("SELECT * FROM nodes ORDER BY name");
             echo json_encode(['success' => true, 'data' => $nodes]);
             break;
+
+        case 'get_nodes_with_building':
+            $nodes = dbSelect("SELECT nodes.*, buildings.name as building_name, buildings.building_part as building_part
+                                FROM nodes JOIN buildings 
+                                ON nodes.building_id = buildings.id ORDER BY nodes.name");
+            echo json_encode(['success' => true, 'data' => $nodes]);
+            break;
             
         case 'get_node':
             $id = isset($_GET['id']) ? intval($_GET['id']) : 0;
