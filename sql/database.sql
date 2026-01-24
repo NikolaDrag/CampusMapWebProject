@@ -12,10 +12,10 @@ COLLATE utf8mb4_unicode_ci;
 -- Избиране на базата данни
 USE campus_navigator;
 
-DROP TABLE IF EXISTS buildings;
 DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS edges;
 DROP TABLE IF EXISTS nodes;
+DROP TABLE IF EXISTS buildings;
 DROP TABLE IF EXISTS users;
 
 
@@ -34,16 +34,16 @@ CREATE TABLE users (
 
 CREATE TABLE buildings (
     id varchar(255) PRIMARY KEY,
-    name varchar(32) UNIQUE NOT NULL,
-    building_part varchar(8),
+    name varchar(32) NOT NULL,
+    building_part varchar(8)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 CREATE TABLE nodes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    lat DECIMAL(10, 7) NOT NULL,
-    lng DECIMAL(10, 7) NOT NULL,
+    lat DECIMAL(11, 8) NOT NULL,
+    lng DECIMAL(11, 8) NOT NULL,
     floor INT DEFAULT 1,
     building_id VARCHAR(100) DEFAULT '',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
