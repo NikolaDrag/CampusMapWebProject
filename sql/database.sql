@@ -102,12 +102,13 @@ CREATE TABLE favorites (
 CREATE TABLE events (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name varchar(255) NOT NULL,
+    description varchar(512),
     node_id INT NOT NULL,
     start_time DATETIME NOT NULL,
     end_time DATETIME NOT NULL,
 
     FOREIGN KEY (node_id) REFERENCES nodes(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 CREATE TABLE event_interests (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -115,8 +116,9 @@ CREATE TABLE event_interests (
     user_id INT NOT NULL,
 
     FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;;
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_event_user (event_id, user_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 
 INSERT INTO users (username, email, password_hash) VALUES
@@ -160,11 +162,11 @@ INSERT INTO nodes (id, name, lat, lng, floor, building_id, hidden, connection, c
 (23, 'Пътека ФХФ-ФМИ-2', 42.67424836457649, 23.33141190025043, 1, 'FMI-FHF-PATH', 1, 0, NULL, NULL),
 (24, 'Пътека ФХФ-ФМИ-3', 42.67412807173594, 23.331873240175387, 1, 'FMI-FHF-PATH', 1, 1, 19, NULL);
 
-INSERT INTO events (name, node_id, start_time, end_time) VALUES
-("Безплатен обяд за студенти и преподаватели", 16, '2026-02-01 11:30:00', '2026-02-01 14:30:00'),
-("Гост лекция на Илон Мъск", 13, '2026-01-30 18:30:00', '2026-01-30 20:30:00'),
-("\"Как да бъдем суперсвежи преподаватели\" - лектор: професор Милен Петров", 1, '2026-01-28 18:30:00', '2026-01-28 20:30:00'),
-("\"PHP е бъдещето!\" - лектор: професор Милен Петров", 13, '2026-01-29 18:30:00', '2026-01-29 20:30:00');
+INSERT INTO events (name, description, node_id, start_time, end_time) VALUES
+("Безплатен обяд за студенти и преподаватели", "Храна на корем за всички гладни студенти!", 16, '2026-02-01 11:30:00', '2026-02-01 14:30:00'),
+("Гост лекция на Илон Мъск", "Какво видях на острова на Епстийн и още интересни истории от живота ми.", 13, '2026-01-30 18:30:00', '2026-01-30 20:30:00'),
+("\"Как да бъдем суперсвежи преподаватели\" - лектор: професор Милен Петров", "Една невероятна лекция от любимия на всички преподавател", 1, '2026-01-28 18:30:00', '2026-01-28 20:30:00'),
+("\"PHP е бъдещето!\" - лектор: професор Милен Петров", "Една невероятна лекция за PHP от любимия на всички преподавател", 13, '2026-01-29 18:30:00', '2026-01-29 20:30:00');
 
 INSERT INTO event_interests (event_id, user_id) VALUES
 (4, 1),

@@ -158,16 +158,25 @@ try {
             $eventId = $_GET['event_id'] ?? null;
 
             if ($eventId) {
+                require_once 'auth.php';
+                $currentUserId = $_SESSION['user_id'] ?? null;
+                
                 $events = dbSelect(
-                    "SELECT event_interests.*, users.username FROM event_interests JOIN users 
-                     ON event_interests.user_id = users.id WHERE event_id = ?",
+                    "SELECT event_interests.*, users.username, event_interests.user_id 
+                    FROM event_interests JOIN users 
+                    ON event_interests.user_id = users.id WHERE event_id = ?",
                     [$eventId]
                 );
+                
+                foreach ($events as &$event) {
+                    $event['is_current_user'] = ($currentUserId && $event['user_id'] == $currentUserId);
+                }
+                unset($event);
+                
+                echo json_encode(['success' => true, 'data' => $events]);
             } else {
                 throw new Exception('Не е избрано събитие');
             }
-
-            echo json_encode(['success' => true, 'data' => $events]);
             break;
 
         case 'add_event_interest':
@@ -175,13 +184,33 @@ try {
                 throw new Exception('Невалиден метод');
             }
 
-            $event_id = isset($_POST['event_id']) ? intval($_POST['event_id']) : 0;
-            $user_id = $_SESSION['user_id']
-            if ($event_id == 0) {
-                throw new Exception('Не е задаено коректно събитие');
+            require_once 'auth.php';
+            
+            if (!isLoggedIn()) {
+                throw new Exception('Трябва да сте влезли в системата');
             }
 
-            $sql = "INSERT INTO events (event_id, user_id)
+            $event_id = isset($_GET['event_id']) ? intval($_GET['event_id']) : 0;
+            $user_id = $_SESSION['user_id'];
+            
+            if ($event_id == 0) {
+                throw new Exception('Не е зададено коректно събитие');
+            }
+
+            $existing = dbSelectOne(
+                "SELECT id FROM event_interests WHERE event_id = ? AND user_id = ?",
+                [$event_id, $user_id]
+            );
+            
+            if ($existing) {
+                echo json_encode([
+                    'success' => true,
+                    'message' => 'Вече сте заинтересован'
+                ]);
+                break;
+            }
+
+            $sql = "INSERT INTO event_interests (event_id, user_id)
                     VALUES (?, ?)";
 
             $id = dbInsert($sql, [$event_id, $user_id]);
@@ -191,6 +220,24 @@ try {
                 'id' => $id,
                 'message' => 'Вече сте заинтересован'
             ]);
+            break;
+
+        case 'delete_event_interest':
+            if ($method !== 'POST') {
+                throw new Exception('Невалиден метод');
+            }
+            
+            $event_id = isset($_GET['event_id']) ? intval($_GET['event_id']) : 0;
+            $user_id = $_SESSION['user_id'];
+            if ($event_id == 0) {
+                throw new Exception('Не е задаено коректно събитие');
+            }
+
+            $sql = "DELETE FROM event_interests WHERE event_id = ? AND user_id = ?";
+
+            $affected = dbDelete($sql, [$event_id, $user_id]);
+            
+            echo json_encode(['success' => true, 'affected' => $affected, 'message' => 'Интересът е изтрита']);
             break;
 
         case 'get_nodes_with_building':
