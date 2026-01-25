@@ -53,7 +53,11 @@ async function loadCampusData() {
                 const popupContent = `
                     <strong>${node.name}</strong><br>
                     Етаж: ${node.floor}<br>
-                    Сграда: ${node.building_name}
+                    Сграда: ${node.building_name}<br>
+                    <a href="events.html?node_id=${node.id}&node_name=${encodeURIComponent(node.name)}"
+                        style="font-weight: bold; text-decoration: none; font-size: 16px; color: #1a73e8;">
+                        Виж събитията
+                    </a>
                 `;
                 campusMap.addMarker(node.id, node.lat, node.lng, popupContent, 'blue');
             }

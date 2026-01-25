@@ -17,6 +17,8 @@ DROP TABLE IF EXISTS edges;
 DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS buildings;
 DROP TABLE IF EXISTS users;
+DROP TABLE IF EXISTS events;
+DROP TABLE IF EXISTS event_interests;
 
 
 CREATE TABLE users (
@@ -97,6 +99,25 @@ CREATE TABLE favorites (
     UNIQUE KEY unique_favorite (user_id, node_from, node_to)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name varchar(255) NOT NULL,
+    node_id INT NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
+
+    FOREIGN KEY (node_id) REFERENCES nodes(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;;
+
+CREATE TABLE event_interests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id INT NOT NULL,
+    user_id INT NOT NULL,
+
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;;
+
 
 INSERT INTO users (username, email, password_hash) VALUES
 ('admin', 'admin@campus.bg', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi'),
@@ -139,6 +160,16 @@ INSERT INTO nodes (id, name, lat, lng, floor, building_id, hidden, connection, c
 (23, 'Пътека ФХФ-ФМИ-2', 42.67424836457649, 23.33141190025043, 1, 'FMI-FHF-PATH', 1, 0, NULL, NULL),
 (24, 'Пътека ФХФ-ФМИ-3', 42.67412807173594, 23.331873240175387, 1, 'FMI-FHF-PATH', 1, 1, 19, NULL);
 
+INSERT INTO events (name, node_id, start_time, end_time) VALUES
+("Безплатен обяд за студенти и преподаватели", 16, '2026-02-01 11:30:00', '2026-02-01 14:30:00'),
+("Гост лекция на Илон Мъск", 13, '2026-01-30 18:30:00', '2026-01-30 20:30:00'),
+("\"Как да бъдем суперсвежи преподаватели\" - лектор: професор Милен Петров", 1, '2026-01-28 18:30:00', '2026-01-28 20:30:00'),
+("\"PHP е бъдещето!\" - лектор: професор Милен Петров", 13, '2026-01-29 18:30:00', '2026-01-29 20:30:00');
+
+INSERT INTO event_interests (event_id, user_id) VALUES
+(4, 1),
+(4, 2),
+(3, 1);
 
 -- =====================================================
 -- INSERT INTO edges: Връзки между залите (генерирани автоматично)
@@ -167,42 +198,3 @@ INSERT INTO edges (node_from, node_to, weight) VALUES
 (13, 15, 2), (15, 13, 2),
 (14, 15, 3), (15, 14, 3),
 (15, 16, 4), (16, 15, 4);
-
--- =====================================================
--- INSERT INTO favorites: Примерни любими маршрути
--- ЗАБЕЛЕЖКА: Използваме string IDs които съответстват на JavaScript
--- За демонстрация, тук използваме реални зали от базата
--- =====================================================
--- Забележка: В момента app.js използва различни IDs ("FMI200", "FMI325"),
--- а базата използва числови IDs (1, 2, 3...). За да работи правилно,
--- или трябва да синхронизираме IDs или да използваме само JavaScript данни.
--- За този проект използваме JavaScript данните като основен източник.
-
--- =====================================================
--- ПРИМЕРНИ SELECT ЗАЯВКИ (за тестване)
--- =====================================================
-
--- Вземане на всички потребители:
--- SELECT id, username, email, created_at FROM users;
-
--- Вземане на всички зали:
--- SELECT * FROM nodes ORDER BY building, name;
-
--- Вземане на всички връзки с имена на залите:
--- SELECT e.id, n1.name as from_name, n2.name as to_name, e.weight
--- FROM edges e
--- JOIN nodes n1 ON e.node_from = n1.id
--- JOIN nodes n2 ON e.node_to = n2.id;
-
--- Вземане на любими маршрути за потребител (user_id = 1):
--- SELECT f.id, f.name as route_name, 
---        n1.name as from_name, n2.name as to_name,
---        f.created_at
--- FROM favorites f
--- JOIN nodes n1 ON f.node_from = n1.id
--- JOIN nodes n2 ON f.node_to = n2.id
--- WHERE f.user_id = 1;
-
--- =====================================================
--- КРАЙ НА СКРИПТА
--- =====================================================

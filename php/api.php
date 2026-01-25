@@ -113,6 +113,92 @@ try {
             echo json_encode(['success' => true, 'affected' => $affected, 'message' => 'Залата е изтрита']);
             break;
         
+        case 'get_events':
+            $nodeId = $_GET['node_id'] ?? null;
+
+            if ($nodeId) {
+                $events = dbSelect(
+                    "SELECT * FROM events WHERE node_id = ? ORDER BY start_time",
+                    [$nodeId]
+                );
+            } else {
+                $events = dbSelect("SELECT * FROM events ORDER BY start_time");
+            }
+
+            echo json_encode(['success' => true, 'data' => $events]);
+            break;
+
+        case 'add_event':
+            if ($method !== 'POST') {
+                throw new Exception('Невалиден метод');
+            }
+
+            $name = isset($_POST['name']) ? trim($_POST['name']) : '';
+            $node_id = isset($_POST['node_id']) ? intval($_POST['node_id']) : 0;
+            $start_time = isset($_POST['start_time']) ? trim($_POST['start_time']) : '';
+            $end_time = isset($_POST['end_time']) ? trim($_POST['end_time']) : '';
+
+            if (empty($name) || $node_id == 0 || empty($start_time) || empty($end_time)) {
+                throw new Exception('Моля попълнете всички задължителни полета');
+            }
+
+            $sql = "INSERT INTO events (name, node_id, start_time, end_time)
+                    VALUES (?, ?, ?, ?)";
+
+            $id = dbInsert($sql, [$name, $node_id, $start_time, $end_time]);
+
+            echo json_encode([
+                'success' => true,
+                'id' => $id,
+                'message' => 'Събитието е добавено'
+            ]);
+            break;
+
+        case 'get_event_interests':
+            $eventId = $_GET['event_id'] ?? null;
+
+            if ($eventId) {
+                $events = dbSelect(
+                    "SELECT event_interests.*, users.username FROM event_interests JOIN users 
+                     ON event_interests.user_id = users.id WHERE event_id = ?",
+                    [$eventId]
+                );
+            } else {
+                throw new Exception('Не е избрано събитие');
+            }
+
+            echo json_encode(['success' => true, 'data' => $events]);
+            break;
+
+        case 'add_event_interest':
+            if ($method !== 'POST') {
+                throw new Exception('Невалиден метод');
+            }
+
+            $event_id = isset($_POST['event_id']) ? intval($_POST['event_id']) : 0;
+            $user_id = $_SESSION['user_id']
+            if ($event_id == 0) {
+                throw new Exception('Не е задаено коректно събитие');
+            }
+
+            $sql = "INSERT INTO events (event_id, user_id)
+                    VALUES (?, ?)";
+
+            $id = dbInsert($sql, [$event_id, $user_id]);
+
+            echo json_encode([
+                'success' => true,
+                'id' => $id,
+                'message' => 'Вече сте заинтересован'
+            ]);
+            break;
+
+        case 'get_nodes_with_building':
+            $nodes = dbSelect("SELECT nodes.*, buildings.name as building_name, buildings.building_part as building_part
+                                FROM nodes JOIN buildings 
+                                ON nodes.building_id = buildings.id ORDER BY nodes.name");
+            echo json_encode(['success' => true, 'data' => $nodes]);
+            break;
         case 'get_edges':
             $edges = dbSelect("
                 SELECT e.*, 
