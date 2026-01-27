@@ -61,8 +61,16 @@ async function loadCampusData() {
                 node.connection_to
             );
 
-            if (!node.hidden) {
-                const popupContent = `
+        }
+
+        //make entrances visible
+        for (let i = 17; i < 21; i++) {
+            campusGraph.getNode(i).hidden=false;            
+        }
+
+        campusGraph.getAllNodes().forEach(node => {
+                        if (!node.hidden) {
+                     const popupContent = `
                     <strong>${node.name}</strong><br>
                     Етаж: ${node.floor}<br>
                     Сграда: ${node.building_name}<br>
@@ -73,7 +81,7 @@ async function loadCampusData() {
                 `;
                 campusMap.addMarker(node.id, node.lat, node.lng, popupContent, 'blue');
             }
-        }
+        });
 
         loadGraphEdges();
 
@@ -88,7 +96,12 @@ function populateDropdowns() {
 
     const nodes = campusGraph.getAllNodes();
 
-    nodes.forEach(node => {
+    const nodesCopy = nodes.filter((_, index) => {
+    // Remove indices 17–20 and 25–28 (inclusive)
+    return !((index >= 16 && index <= 19) || (index >= 24 && index <= 27));
+    });
+
+    nodesCopy.forEach(node => {
         if (node.hidden) return;
 
         const option1 = document.createElement('option');
@@ -117,39 +130,58 @@ function setupEventListeners() {
 }
 
 async function getNodes(typeOfTransport) {
-    let url;
+    let response;
+
     switch (typeOfTransport) {
-        case "bus": url = 'php/api.php?action=get_bus_stops'; break;
-        case "tram": url = 'php/api.php?action=get_tram_stops'; break;
+        case "bus":
+            response = await fetch('php/api.php?action=get_bus_stops');
+            break;
+        case "tram":
+            response = await fetch('php/api.php?action=get_tram_stops');
+            break;
         default:
-            throw new Error(`Unknown transport type: ${typeOfTransport}`);
+            return []; // unknown type
     }
 
-    try {
-        const response = await fetch(url);
-        const result = await response.json();
+    const json = await response.json();
 
-        console.log('Server response:', result);
-
-        if (!result.success || !Array.isArray(result.data)) {
-            throw new Error('Invalid data format from server');
-        }
-
-        // map JSON to array of "nodes"
-        const nodes = result.data.map(item => ({
-            name: item.line_name,  // changed from item.name
-            lng: parseFloat(item.lng),
-            lat: parseFloat(item.lat)
-        }));
-
-        return nodes;
-    } catch (err) {
-        console.error("Error fetching nodes:", err);
+    if (!json.success || !Array.isArray(json.data)) {
+        console.error("Invalid data from server", json);
         return [];
     }
+
+    // Convert server data to Leaflet LatLng objects
+    const nodes = json.data.map(item => L.latLng(
+        parseFloat(item.lat),
+        parseFloat(item.lng)
+    ));
+
+    return nodes;
+}
+
+function isInSameCampus(sNode, eNode){
+
+    return !( 
+        
+          ( !["FMI", "FZF", "FHF"].includes(sNode.building_name) && 
+             ["FMI", "FZF", "FHF"].includes(eNode.building_name)     )
+        
+            ||
+
+          (  ["FMI", "FZF", "FHF"].includes(sNode.building_name) && 
+            !["FMI", "FZF", "FHF"].includes(eNode.building_name)      )        
+    ) 
 }
 
 
+function showResultLink(url, text = "Виж разписание на спирките") {
+    const pEl = document.getElementById('result-link');      // контейнер <p>
+    const aEl = document.getElementById('result-link-a');    // самия линк <a>
+    
+    aEl.href = url;      // задава URL на линка
+    aEl.textContent = text;  // текст на линка
+    pEl.hidden = false;      // показва линка
+}
 
 
 
@@ -157,6 +189,10 @@ function findPath() {
     const startId = document.getElementById('start-point').value;
     const endId = document.getElementById('end-point').value;
     const typeOfTransport = document.getElementById('transport').value;
+    let result = [], result2 = [];
+    let sNode = campusGraph.getNode(startId); //string to int?
+    let eNode = campusGraph.getNode(endId);
+
 
     if (!startId || !endId) {
         alert('Моля, избери начална и крайна точка!');
@@ -168,46 +204,78 @@ function findPath() {
         return;
     }
 
-    
-    let result = [], result2 = [];
-    switch (typeOfTransport) {
-        case "bus": result = campusGraph.dijkstra(startId, "25", 4, typeOfTransport);
-                    result2 = campusGraph.dijkstra("26", endId, 4, typeOfTransport);
-                    break;
 
-        case "tram":  result = campusGraph.dijkstra(startId, "27", 4, typeOfTransport); 
-                      result2 = campusGraph.dijkstra("28", endId, 4, typeOfTransport);
-                      break;
 
-        case "walk":  result = campusGraph.dijkstra(startId, endId, 4, typeOfTransport); 
-                      break;
-        default:  break;
+    if (typeOfTransport != "walk" && isInSameCampus(sNode,eNode)) {
+        
+        result = campusGraph.dijkstra(startId, endId, 4, "walk"); 
+        document.getElementById('transport').value = 'walk';
+        alert('Няма как да ползваш превозно средство в един и същи кампус!');
+
     }
+    else{
+
+        switch (typeOfTransport) {
+    
+            case "bus":
+                          result = campusGraph.dijkstra(startId, "25", 4, typeOfTransport);
+                          result2 = campusGraph.dijkstra("26", endId, 4, typeOfTransport);
+                          result.distance+=15;
+                          showResultLink("https://moovitapp.com/index/bg/%D0%B3%D1%80%D0%B0%D0%B4%D1%81%D0%BA%D0%B8_%D1%82%D1%80%D0%B0%D0%BD%D1%81%D0%BF%D0%BE%D1%80%D1%82-line-10-Sofia_%D0%A1%D0%BE%D1%84%D0%B8%D1%8F-3501-856936-715153-0")
+                          break;
+    
+            case "tram":  
+                          result = campusGraph.dijkstra(startId, "27", 4, typeOfTransport); 
+                          result2 = campusGraph.dijkstra("28", endId, 4, typeOfTransport);
+                          result.distance+=15;
+                          showResultLink("https://moovitapp.com/tripplan/sofia_%D1%81%D0%BE%D1%84%D0%B8%D1%8F-3501/lines/94/712644/3049866/bg?ref=2&poiType=line&sid=11082717&customerId=4908&af_sub8=%2Findex%2Fbg%2F%25D0%25B3%25D1%2580%25D0%25B0%25D0%25B4%25D1%2581%25D0%25BA%25D0%25B8_%25D1%2582%25D1%2580%25D0%25B0%25D0%25BD%25D1%2581%25D0%25BF%25D0%25BE%25D1%2580%25D1%2582-line-94-Sofia_%25D0%25A1%25D0%25BE%25D1%2584%25D0%25B8%25D1%258F-3501-857201-712644-0&af_sub9=Upcoming%20arrivals")
+                          break;
+    
+            case "walk": 
+                          result = campusGraph.dijkstra(startId, endId, 4, typeOfTransport);
+                          document.getElementById('result-link').hidden = true;
+                          break;
+    
+            case "car": 
+                         result = campusGraph.dijkstra(startId, endId, 30, typeOfTransport); 
+                         document.getElementById('result-link').hidden = true;
+                         break;
+    
+            default:  break;
+        }
+    }
+
+   
 
   
 
-    campusMap.clearPath();
-    if (result && result.path && result.path.length > 0) {
-        drawPathOnMap(result.path);
-    }
+    // campusMap.clearPath();
+    // if (result && result.path && result.path.length > 0) {
+    //     drawPathOnMap(result.path);
+    // }
 
-    if (typeOfTransport !== "walk") {
-        drawPathOnMap_transport(typeOfTransport); // if async
-    }
+    // if (typeOfTransport !== "walk") {
+    //     drawPathOnMap_transport(typeOfTransport); // if async
+    //      // check result2 safely
+    //     if (result2 && result2.path && result2.path.length > 0) {
+    //         drawPathOnMap(result2.path);
+    //     }
+    // }
 
-    // check result2 safely
-    if (result2 && result2.path && result2.path.length > 0) {
-        drawPathOnMap(result2.path);
-    }
+   
  
    
     const totalDistance = result.distance + (result2?.distance || 0);
     let res = {
-                 path: result.path.concat(result2.path),
-                 distance: totalDistance, //time
-                 message: `Най-кратък път: ${totalDistance} минути`
+                path: result.path.concat(result2?.path || []),
+                distance: result.distance, //time
+                message: `Най-кратък път: ${result.distance} минути`
             };
 
+
+    if (res && res.path && res.path.length > 0) {
+        drawPathOnMap(res.path.map(Number));
+    }     
     displayResult(res);
 
     
@@ -247,8 +315,20 @@ function drawPathOnMap(path) {
 }
 
 async function drawPathOnMap_transport(typeOfTransport) {
-    const nodes = await getNodes(typeOfTransport); // wait for the array
-    campusMap.drawFullRoute(nodes, '#e6a519');     // now pass the actual array
+    try {
+        const nodes = await getNodes(typeOfTransport);
+
+        if (nodes.length === 0) {
+            console.warn("No nodes to draw for", typeOfTransport);
+            return;
+        }
+
+        // Pass the array directly to your map drawing function
+        campusMap.drawFullRoute(nodes, '#e6a519');
+
+    } catch (err) {
+        console.error("Error drawing path on map:", err);
+    }
 }
 
 

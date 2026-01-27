@@ -48,18 +48,19 @@ class CampusGraph {
         const visited = {};
         const queue = [];
 
+        const nodesCopy = structuredClone(this.nodes);
 
         if (typeOfTransport=="walk") {        
 
-            for (let i = 25; i <= 27; i++) {
-                delete this.nodes[i]; 
+            for (let i = 25; i <= 28; i++) {
+                delete nodesCopy[i]; 
                 //this.edges = this.edges.filter(e => e.from !== i && e.to !== i);
             }
         }
            
         //maybe copy nodes wihtout 25-27 and use it instead of modifying original list
 
-        for (let nodeId in this.nodes) {
+        for (let nodeId in nodesCopy) {
             distances[nodeId] = Infinity;
             previous[nodeId] = null;
         }
@@ -203,9 +204,9 @@ function loadGraphEdges() {
         campusGraph.addEdge(20, 26, getDistance(nodes[20], nodes[26])); //su - 94
 
         //tram
-        campusGraph.addEdge(17, 25, getDistance(nodes[17], nodes[27])); //fmi - 10
-        campusGraph.addEdge(18, 25, getDistance(nodes[18], nodes[27])); //fzf - 10
-        campusGraph.addEdge(19, 25, getDistance(nodes[19], nodes[27])); //fhf - 10
+        campusGraph.addEdge(17, 27, getDistance(nodes[17], nodes[27])); //fmi - 10
+        campusGraph.addEdge(18, 27, getDistance(nodes[18], nodes[27])); //fzf - 10
+        campusGraph.addEdge(19, 27, getDistance(nodes[19], nodes[27])); //fhf - 10
 
         campusGraph.addEdge(20, 28, getDistance(nodes[20], nodes[28])); //su - 10
 
