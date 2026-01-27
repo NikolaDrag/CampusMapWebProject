@@ -117,27 +117,39 @@ function setupEventListeners() {
 }
 
 async function getNodes(typeOfTransport) {
-
-    let response;
+    let url;
     switch (typeOfTransport) {
-        case "bus":  response = await fetch('php/api.php?action=get_bus_stops'); break;
-        case "tram":  response = await fetch('php/api.php?action=get_tram_stops'); break;
+        case "bus": url = 'php/api.php?action=get_bus_stops'; break;
+        case "tram": url = 'php/api.php?action=get_tram_stops'; break;
         default:
-            break;
+            throw new Error(`Unknown transport type: ${typeOfTransport}`);
     }
 
-   
-    const data = await response.json();
+    try {
+        const response = await fetch(url);
+        const result = await response.json();
 
-    // map JSON to array of "nodes"
-    const nodes = data.map(item => ({
-        name: item.name,
-        lng: item.lng,
-        lat: item.lat
-    }));
+        console.log('Server response:', result);
 
-    return nodes;
+        if (!result.success || !Array.isArray(result.data)) {
+            throw new Error('Invalid data format from server');
+        }
+
+        // map JSON to array of "nodes"
+        const nodes = result.data.map(item => ({
+            name: item.line_name,  // changed from item.name
+            lng: parseFloat(item.lng),
+            lat: parseFloat(item.lat)
+        }));
+
+        return nodes;
+    } catch (err) {
+        console.error("Error fetching nodes:", err);
+        return [];
+    }
 }
+
+
 
 
 
@@ -159,12 +171,12 @@ function findPath() {
     
     let result, result2;
     switch (typeOfTransport) {
-        case "bus": result = campusGraph.dijkstra(startId, 25, 4, typeOfTransport);
-                    result2 = campusGraph.dijkstra(26, endId, 4, typeOfTransport);
+        case "bus": result = campusGraph.dijkstra(startId, "25", 4, typeOfTransport);
+                    result2 = campusGraph.dijkstra("26", endId, 4, typeOfTransport);
                     break;
 
-        case "tram":  result = campusGraph.dijkstra(startId, 27, 4, typeOfTransport); 
-                      result2 = campusGraph.dijkstra(28, endId, 4, typeOfTransport);
+        case "tram":  result = campusGraph.dijkstra(startId, "27", 4, typeOfTransport); 
+                      result2 = campusGraph.dijkstra("28", endId, 4, typeOfTransport);
                       break;
 
         case "walk":  result = campusGraph.dijkstra(startId, endId, 4, typeOfTransport); break;
@@ -172,8 +184,8 @@ function findPath() {
     }
 
   
-    displayResult(result);
 
+    campusMap.clearPath();
     if (result.path.length > 0) {
         drawPathOnMap(result.path);
     } 
@@ -184,7 +196,13 @@ function findPath() {
         drawPathOnMap(result.path);
     }
 
- 
+    let res = {
+                 path: result.path.concat(result2.path),
+                 distance: result.distance+result2.distance, //time
+                 message: `Най-кратък път: ${result.distance+result2.distance} минути`
+            };
+
+    displayResult(res);
 
     
 }
@@ -223,8 +241,8 @@ function drawPathOnMap(path) {
 }
 
 async function drawPathOnMap_transport(typeOfTransport) {
-
-    campusMap.drawFullRoute(getNodes(typeOfTransport), '#e6a519');
+    const nodes = await getNodes(typeOfTransport); // wait for the array
+    campusMap.drawFullRoute(nodes, '#e6a519');     // now pass the actual array
 }
 
 

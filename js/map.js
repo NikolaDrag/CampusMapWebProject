@@ -71,7 +71,7 @@ class CampusMap {
     }
 
     drawFullRoute(pathNodes, color = '#e74c3c') {
-        this.clearPath();
+        //this.clearPath();
 
         if (pathNodes.length < 2) return;
 

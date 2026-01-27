@@ -111,12 +111,12 @@ class CampusGraph {
         distances[endId] = (distances[endId] * 60) / (1000 * speed);
 
 
-     switch (typeOfTransport) {
-        case "bus": distances[endId]+= 20;  break;     
-        case "tram": distances[endId]+= 25;   break;        
-        default:
-            break;
-     }
+    //  switch (typeOfTransport) {
+    //     case "bus": distances[endId]+= 20;  break;     
+    //     case "tram": distances[endId]+= 25;   break;        
+    //     default:
+    //         break;
+    //  }
         return {
             path: path,
             distance: distances[endId],
@@ -192,6 +192,26 @@ function loadGraphEdges() {
     // it's all good if Milen Petrov не разбере🍆
     try {
         campusGraph.addEdge(17, 20, getDistance(nodes[17], nodes[20]));
+
+        //public transport nodes
+
+        //buses
+        campusGraph.addEdge(17, 25, getDistance(nodes[17], nodes[25])); //fmi - 94
+        campusGraph.addEdge(18, 25, getDistance(nodes[18], nodes[25])); //fzf - 94
+        campusGraph.addEdge(19, 25, getDistance(nodes[19], nodes[25])); //fhf - 94
+
+        campusGraph.addEdge(20, 26, getDistance(nodes[20], nodes[26])); //su - 94
+
+        //tram
+        campusGraph.addEdge(17, 25, getDistance(nodes[17], nodes[27])); //fmi - 10
+        campusGraph.addEdge(18, 25, getDistance(nodes[18], nodes[27])); //fzf - 10
+        campusGraph.addEdge(19, 25, getDistance(nodes[19], nodes[27])); //fhf - 10
+
+        campusGraph.addEdge(20, 28, getDistance(nodes[20], nodes[28])); //su - 10
+
+
+
+
     } catch (error) { }
 }
 
