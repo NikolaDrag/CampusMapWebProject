@@ -169,7 +169,7 @@ function findPath() {
     }
 
     
-    let result, result2;
+    let result = [], result2 = [];
     switch (typeOfTransport) {
         case "bus": result = campusGraph.dijkstra(startId, "25", 4, typeOfTransport);
                     result2 = campusGraph.dijkstra("26", endId, 4, typeOfTransport);
@@ -179,27 +179,33 @@ function findPath() {
                       result2 = campusGraph.dijkstra("28", endId, 4, typeOfTransport);
                       break;
 
-        case "walk":  result = campusGraph.dijkstra(startId, endId, 4, typeOfTransport); break;
+        case "walk":  result = campusGraph.dijkstra(startId, endId, 4, typeOfTransport); 
+                      break;
         default:  break;
     }
 
   
 
     campusMap.clearPath();
-    if (result.path.length > 0) {
-        drawPathOnMap(result.path);
-    } 
-    if (typeOfTransport!= "walk") {
-        drawPathOnMap_transport(typeOfTransport);
-    }    
-    if (result2.path.length > 0) {
+    if (result && result.path && result.path.length > 0) {
         drawPathOnMap(result.path);
     }
 
+    if (typeOfTransport !== "walk") {
+        drawPathOnMap_transport(typeOfTransport); // if async
+    }
+
+    // check result2 safely
+    if (result2 && result2.path && result2.path.length > 0) {
+        drawPathOnMap(result2.path);
+    }
+ 
+   
+    const totalDistance = result.distance + (result2?.distance || 0);
     let res = {
                  path: result.path.concat(result2.path),
-                 distance: result.distance+result2.distance, //time
-                 message: `Най-кратък път: ${result.distance+result2.distance} минути`
+                 distance: totalDistance, //time
+                 message: `Най-кратък път: ${totalDistance} минути`
             };
 
     displayResult(res);
