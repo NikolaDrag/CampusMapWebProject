@@ -19,6 +19,7 @@ DROP TABLE IF EXISTS buildings;
 DROP TABLE IF EXISTS users;
 DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS event_interests;
+DROP TABLE IF EXISTS public_transport;
 
 
 CREATE TABLE users (
@@ -84,6 +85,14 @@ CREATE TABLE edges (
     INDEX idx_to (node_to)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
+CREATE TABLE public_transport (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    line_name VARCHAR(10),
+    stop_name VARCHAR(255),
+    lat DECIMAL(10, 8),
+    lng DECIMAL(11, 8),
+    vehicle_type VARCHAR(20)
+);
 
 CREATE TABLE favorites (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -134,7 +143,9 @@ INSERT INTO buildings (id, name, building_part) VALUES
 ("FHF A", "FHF", "A"),
 ("FHF B", "FHF", "B"),
 ("FMI-FHF-PATH", "FMI-FHF-PATH", NULL),
-("FMI-FZF-PATH", "FMI-FZF-PATH", NULL);
+("FMI-FZF-PATH", "FMI-FZF-PATH", NULL),
+("BUS-STOP", "BUS-STOP", NULL),
+("TRAM-STOP", "TRAM-STOP", NULL);
 
 INSERT INTO nodes (id, name, lat, lng, floor, building_id, hidden, connection, connection_from, connection_to) VALUES
 (1, 'ФМИ - Зала 200 (Аудиториум)', 42.67446134, 23.33070514, 2, 'FMI', 0, 0, NULL, NULL),
@@ -160,7 +171,11 @@ INSERT INTO nodes (id, name, lat, lng, floor, building_id, hidden, connection, c
 (21, 'Пътека ФЗФ-ФМИ', 42.674330203001595, 23.329892428871545, 1, 'FMI-FZF-PATH', 1, 1, 17, 18),
 (22, 'Пътека ФХФ-ФМИ-1', 42.67464966768705, 23.331000181169276, 1, 'FMI-FHF-PATH', 1, 1, 17, NULL),
 (23, 'Пътека ФХФ-ФМИ-2', 42.67424836457649, 23.33141190025043, 1, 'FMI-FHF-PATH', 1, 0, NULL, NULL),
-(24, 'Пътека ФХФ-ФМИ-3', 42.67412807173594, 23.331873240175387, 1, 'FMI-FHF-PATH', 1, 1, 19, NULL);
+(24, 'Пътека ФХФ-ФМИ-3', 42.67412807173594, 23.331873240175387, 1, 'FMI-FHF-PATH', 1, 1, 19, NULL),
+(25, 'Спирка на автобус №94 - Семинарията', 42.67667662955669, 23.333929292833403, 0, 'BUS-STOP', 0, 0, NULL, NULL), 
+(26, 'Спирка на автобус №94 - СУ Ректорат', 42.69222344380924, 23.33514565195622, 0, 'BUS-STOP', 0, 0, NULL, NULL), 
+(27, 'Спирка на трамвай №10 - Семинарията', 42.676088990208896, 23.33345185963804, 0, 'TRAM-STOP', 0, 0, NULL, NULL), 
+(28, 'Спирка на трамвай №10 - Бул. В. Левски', 42.68794673082644, 23.32916474933916, 0, 'TRAM-STOP', 0, 0, NULL, NULL); 
 
 INSERT INTO events (name, description, node_id, start_time, end_time) VALUES
 ("Безплатен обяд за студенти и преподаватели", "Храна на корем за всички гладни студенти!", 16, '2026-02-01 11:30:00', '2026-02-01 14:30:00'),
@@ -172,6 +187,27 @@ INSERT INTO event_interests (event_id, user_id) VALUES
 (4, 1),
 (4, 2),
 (3, 1);
+
+
+-- Автобус 94 (примерни спирки)
+INSERT INTO public_transport (line_name, stop_name, lat, lng, vehicle_type) VALUES
+('94', 'Семинарията', 42.697506, 23.322160, 'Bus'),
+('94', 'Хотел Хемус',  42.6791272032593, 23.32213327234565, 'Bus'),
+('94', 'Хотел Хилтън',  42.683963487457625, 23.321051001460223, 'Bus'),
+('94', 'Ул. 6-ти септември',  42.68649913333566, 23.324197017915886, 'Bus'),
+('94', 'Кино Одеон',  42.688514998427706, 23.32959584883216, 'Bus'),
+('94', 'Ул. Ген. Гурко',  42.69063635984072, 23.33210639651473, 'Bus'),
+('94', 'СУ Св. Климент Охридски', 42.69227661932533, 23.33527140311102, 'Bus');
+
+-- Трамвай 10 (примерни спирки)
+INSERT INTO public_transport (line_name, stop_name, lat, lng, vehicle_type) VALUES
+('10', 'Семинарията', 42.67601213732948, 23.333246647903394, 'Tram'),
+('10', 'Ул. Вишнева',  42.67854895347737, 23.33437889795501, 'Tram'),
+('10', 'Пл. Журналист',  42.681561906049325, 23.331889808068443, 'Tram'),
+('10', 'УАСГ',  42.68572616539562, 23.330795466805807, 'Tram'),
+('10', 'Бул. Васил Левски',  42.688027, 23.329034, 'Tram');
+
+
 
 -- =====================================================
 -- INSERT INTO edges: Връзки между залите (генерирани автоматично)

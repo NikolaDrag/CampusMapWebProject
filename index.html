@@ -1,21 +1,23 @@
 <!DOCTYPE html>
 <html lang="bg">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Campus Navigator - Навигация в кампуса</title>
-    
+
     <!-- Leaflet - библиотека за интерактивни карти с OpenStreetMap -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-    
+
     <!-- Leaflet Routing Machine - за маршрути по улици -->
     <link rel="stylesheet" href="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.css" />
     <script src="https://unpkg.com/leaflet-routing-machine@3.2.12/dist/leaflet-routing-machine.js"></script>
-    
+
     <!-- Нашият CSS файл -->
     <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
     <header>
         <div class="header-content">
@@ -45,7 +47,7 @@
 
         <div id="control-panel">
             <h2>Навигация</h2>
-            
+
             <div class="form-group">
                 <label for="start-point">Начална точка:</label>
                 <select id="start-point">
@@ -60,8 +62,18 @@
                 </select>
             </div>
 
+            <div class="form-group">
+                <label for="transport">Вид транспорт:</label>
+                <select id="transport">
+                    <option value="walk" selected>Пеша</option>
+                    <option value="bus">Автобус</option>
+                    <option value="tram">Трамвай</option>
+                </select>
+            </div>
+
+
             <button id="find-path-btn">Намери път</button>
-            
+
             <button id="add-favorite-btn" style="display:none;">Добави в любими</button>
 
             <div id="result">
@@ -89,4 +101,5 @@
     <script src="js/map.js?v=4"></script>
     <script src="js/app.js?v=4"></script>
 </body>
+
 </html>

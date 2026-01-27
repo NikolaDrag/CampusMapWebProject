@@ -1,9 +1,12 @@
 <?php
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 if (session_status() === PHP_SESSION_NONE) {
     session_start();
 }
 
-require_once 'db.php';
+require_once __DIR__ . '/db.php';
 
 header('Content-Type: application/json; charset=utf-8');
 
@@ -391,6 +394,19 @@ try {
                 throw new Exception('Маршрутът не е намерен или нямате права да го изтриете');
             }
             break;
+
+
+        case 'get_bus_stops': 
+
+            $public_transport = dbSelect("SELECT line_name,lng,lat FROM `public_transport` where vehicle_type LIKE \"Bus\"; ");
+            echo json_encode(['success' => true, 'data' => $public_transport]);
+            break;
+
+        case 'get_tram_stops':
+
+            $public_transport = dbSelect("SELECT line_name,lng,lat FROM `public_transport` where vehicle_type LIKE \"Tram\"; ");
+            echo json_encode(['success' => true, 'data' => $public_transport]);
+            break;           
             
         default:
             echo json_encode(['success' => false, 'error' => 'Непозната команда']);
