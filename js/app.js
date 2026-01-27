@@ -176,7 +176,15 @@ function findPath() {
 
     if (result.path.length > 0) {
         drawPathOnMap(result.path);
+    } 
+    if (typeOfTransport!= "walk") {
+        drawPathOnMap_transport(typeOfTransport);
+    }    
+    if (result2.path.length > 0) {
+        drawPathOnMap(result.path);
     }
+
+ 
 
     
 }
