@@ -42,7 +42,7 @@ async function loadCampusData() {
             return;
         }
 
-        
+
 
         const nodes = result.data;
 
@@ -143,7 +143,7 @@ async function getNodes(typeOfTransport) {
 
 function findPath() {
     const startId = document.getElementById('start-point').value;
-    let endId = document.getElementById('end-point').value;
+    const endId = document.getElementById('end-point').value;
     const typeOfTransport = document.getElementById('transport').value;
 
     if (!startId || !endId) {
