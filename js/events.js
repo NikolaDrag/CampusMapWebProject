@@ -15,6 +15,61 @@ if (!nodeId) {
     fetchEvents(nodeId);
 }
 
+// Form toggle functionality
+const toggleFormBtn = document.getElementById('toggle-form-btn');
+const formContainer = document.getElementById('event-form-container');
+const cancelFormBtn = document.getElementById('cancel-form-btn');
+const addEventForm = document.getElementById('add-event-form');
+
+toggleFormBtn.addEventListener('click', () => {
+    const isVisible = formContainer.style.display !== 'none';
+    formContainer.style.display = isVisible ? 'none' : 'block';
+    toggleFormBtn.textContent = isVisible ? '+ Добави ново събитие' : '- Скрий формата';
+});
+
+cancelFormBtn.addEventListener('click', () => {
+    formContainer.style.display = 'none';
+    toggleFormBtn.textContent = '+ Добави ново събитие';
+    addEventForm.reset();
+});
+
+addEventForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    
+    const formData = new FormData(addEventForm);
+    formData.append('node_id', nodeId);
+    
+    const startTime = new Date(formData.get('start_time'));
+    const endTime = new Date(formData.get('end_time'));
+    
+    if (endTime <= startTime) {
+        alert('Крайното време трябва да е след началното време.');
+        return;
+    }
+    
+    fetch('php/api.php?action=add_event', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert(data.message || 'Събитието е добавено успешно!');
+            addEventForm.reset();
+            formContainer.style.display = 'none';
+            toggleFormBtn.textContent = '+ Добави ново събитие';
+            // Refresh the events list
+            fetchEvents(nodeId);
+        } else {
+            alert(data.error || 'Възникна грешка при добавянето на събитието.');
+        }
+    })
+    .catch(err => {
+        console.error(err);
+        alert('Възникна грешка при свързването със сървъра.');
+    });
+});
+
 function fetchEvents(nodeId) {
     fetch(`php/api.php?action=get_events&node_id=${nodeId}`)
         .then(response => response.json())
@@ -50,6 +105,7 @@ function fetchEvents(nodeId) {
                 eventsList.appendChild(li);
             });
 
+            container.innerHTML = '';
             container.appendChild(eventsList);
         })
         .catch(err => {

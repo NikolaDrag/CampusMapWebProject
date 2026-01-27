@@ -137,6 +137,7 @@ try {
             }
 
             $name = isset($_POST['name']) ? trim($_POST['name']) : '';
+            $description = isset($_POST['description']) ? trim($_POST['description']) : '';
             $node_id = isset($_POST['node_id']) ? intval($_POST['node_id']) : 0;
             $start_time = isset($_POST['start_time']) ? trim($_POST['start_time']) : '';
             $end_time = isset($_POST['end_time']) ? trim($_POST['end_time']) : '';
@@ -145,10 +146,10 @@ try {
                 throw new Exception('Моля попълнете всички задължителни полета');
             }
 
-            $sql = "INSERT INTO events (name, node_id, start_time, end_time)
-                    VALUES (?, ?, ?, ?)";
+            $sql = "INSERT INTO events (name, description, node_id, start_time, end_time)
+                    VALUES (?, ?, ?, ?, ?)";
 
-            $id = dbInsert($sql, [$name, $node_id, $start_time, $end_time]);
+            $id = dbInsert($sql, [$name, $description, $node_id, $start_time, $end_time]);
 
             echo json_encode([
                 'success' => true,
