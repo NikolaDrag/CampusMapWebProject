@@ -13,14 +13,50 @@
     </header>
 
     <main>
-    <div id="events-wrapper" class="events-wrapper">
-        <div id="events-container" class="events-column">
+        <div class="add-event-section">
+            <button id="toggle-form-btn" class="toggle-form-btn">+ Добави ново събитие</button>
+            
+            <div id="event-form-container" class="event-form-container" style="display: none;">
+                <h2>Добави ново събитие</h2>
+                <form id="add-event-form">
+                    <div class="form-group">
+                        <label for="event-name">Име на събитието *</label>
+                        <input type="text" id="event-name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="event-description">Описание</label>
+                        <textarea id="event-description" name="description" rows="3"></textarea>
+                    </div>
+                    
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="event-start">Начало *</label>
+                            <input type="datetime-local" id="event-start" name="start_time" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="event-end">Край *</label>
+                            <input type="datetime-local" id="event-end" name="end_time" required>
+                        </div>
+                    </div>
+                    
+                    <div class="form-actions">
+                        <button type="submit" class="btn-submit">Добави събитие</button>
+                        <button type="button" id="cancel-form-btn" class="btn-cancel">Отказ</button>
+                    </div>
+                </form>
+            </div>
         </div>
-        <div id="event-details" class="details-column">
-            <p>Изберете събитие, за да видите заинтересованите потребители.</p>
+
+        <div id="events-wrapper" class="events-wrapper">
+            <div id="events-container" class="events-column">
+            </div>
+            <div id="event-details" class="details-column">
+                <p>Изберете събитие, за да видите заинтересованите потребители.</p>
+            </div>
         </div>
-    </div>
-</main>
+    </main>
 
     <script src="js/events.js"></script>
 </body>
