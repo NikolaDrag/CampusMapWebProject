@@ -53,6 +53,11 @@
 - Автоматично генериране на връзки между зали в една сграда
 - Скрити възли (hidden nodes) за пътеки между сгради
 - CRUD операции за управление на зали и връзки през API
+- Избор на транспортно средство (пеша, кола, автобус, трамвай)
+- Интеграция със спирки на градски транспорт (автобус №94, трамвай №10)
+- Линкове към разписания на градски транспорт (Moovit)
+- Събития на локации - преглед, добавяне на събития
+- Заинтересованост от събития - маркиране и списък на заинтересовани потребители
 
 2.3 Нефункционални изисквания:
 - Трислойна архитектура (презентация, бизнес логика, данни)
@@ -108,14 +113,23 @@
 - created_at (DATETIME)
 - last_login (DATETIME)
 
+Таблица buildings:
+- id (VARCHAR 255, PRIMARY KEY)
+- name (VARCHAR 32) - име на сградата (FMI, FZF, FHF, RECTORATE)
+- building_part (VARCHAR 8) - част от сградата (A, B)
+
 Таблица nodes:
 - id (INT, PRIMARY KEY, AUTO_INCREMENT)
 - name (VARCHAR 100)
-- lat (DECIMAL 10,7) - географска ширина
-- lng (DECIMAL 10,7) - географска дължина
+- lat (DECIMAL 11,8) - географска ширина
+- lng (DECIMAL 11,8) - географска дължина
 - floor (INT) - етаж
-- building (VARCHAR 100) - сграда
+- building_id (VARCHAR 100, FOREIGN KEY -> buildings.id)
 - created_at (DATETIME)
+- hidden (BOOLEAN) - скрит възел (за пътеки)
+- connection (BOOLEAN) - дали е връзка между сгради
+- connection_from (INT, FOREIGN KEY -> nodes.id)
+- connection_to (INT, FOREIGN KEY -> nodes.id)
 
 Таблица edges:
 - id (INT, PRIMARY KEY, AUTO_INCREMENT)
@@ -124,24 +138,48 @@
 - weight (INT) - време в минути
 - created_at (DATETIME)
 
+Таблица events:
+- id (INT, PRIMARY KEY, AUTO_INCREMENT)
+- name (VARCHAR 255) - име на събитието
+- description (VARCHAR 512) - описание
+- node_id (INT, FOREIGN KEY -> nodes.id) - локация
+- start_time (DATETIME) - начало
+- end_time (DATETIME) - край
+
+Таблица event_interests:
+- id (INT, PRIMARY KEY, AUTO_INCREMENT)
+- event_id (INT, FOREIGN KEY -> events.id)
+- user_id (INT, FOREIGN KEY -> users.id)
+- UNIQUE KEY (event_id, user_id)
+
+Таблица public_transport:
+- id (INT, PRIMARY KEY, AUTO_INCREMENT)
+- line_name (VARCHAR 10) - номер на линията
+- stop_name (VARCHAR 255) - име на спирката
+- lat (DECIMAL 10,8) - географска ширина
+- lng (DECIMAL 11,8) - географска дължина
+- vehicle_type (VARCHAR 20) - тип превозно средство (Bus, Tram)
+
 3.3 Декомпозиция на модулите:
 
 а) Презентационен слой:
    - index.html - главна страница с карта и навигация
+   - events.html - страница за събития на локации
    - login.php - страница за вход
    - register.php - страница за регистрация
    - css/style.css - основни стилове
    - css/auth.css - стилове за форми за вход/регистрация
+   - css/events_style.css - стилове за страницата със събития
 
 б) JavaScript модули:
    - js/graph.js - граф структура и алгоритъм на Dijkstra
    - js/map.js - работа с Leaflet и OpenStreetMap
-   - js/app.js - основна логика на приложението
+   - js/app.js - основна логика на приложението, избор на транспорт
+   - js/events.js - логика за събития (CRUD, заинтересованост)
 
 в) PHP модули:
-   - php/config.php - конфигурационни настройки
    - php/db.php - функции за работа с базата данни
-   - php/api.php - REST API за CRUD операции
+   - php/api.php - REST API за CRUD операции (nodes, edges, events, transport)
    - php/auth.php - автентикация (login, register, logout)
 
 г) SQL скриптове:
@@ -276,26 +314,37 @@
 
 5.3 Структура на файловете:
 
-ProjectWeb/
-├── index.html              - главна страница с карта
-├── login.php              - страница за вход
-├── register.php           - страница за регистрация
-├── css/
-│   ├── style.css          - основни стилове
-│   └── auth.css           - стилове за вход/регистрация
-├── js/
-│   ├── graph.js           - граф и Dijkstra
-│   ├── map.js             - Leaflet карта
-│   └── app.js             - приложна логика
-├── php/
-│   ├── config.php         - конфигурация
-│   ├── db.php             - функции за БД
-│   ├── api.php            - REST API
-│   └── auth.php           - автентикация
-├── sql/
-│   └── database.sql       - SQL скрипт
-└── data/
-    └── campus.json        - примерни данни
+CampusMapWebProject/
+│   .gitignore              - Git ignore файл
+│   .htaccess               - Apache конфигурация
+│   DOKUMENTACIA.txt        - документация на проекта
+│   events.html             - страница за събития на локации
+│   index.html              - главна страница с карта
+│   login.php               - страница за вход
+│   README.md               - README файл
+│   register.php            - страница за регистрация
+│
+├───css/
+│       auth.css            - стилове за вход/регистрация
+│       events_style.css    - стилове за събития
+│       style.css           - основни стилове
+│
+├───data/
+│       campus.json         - примерни данни
+│
+├───js/
+│       app.js              - приложна логика, избор на транспорт
+│       events.js           - логика за събития
+│       graph.js            - граф и Dijkstra
+│       map.js              - Leaflet карта
+│
+├───php/
+│       api.php             - REST API (nodes, edges, events, transport)
+│       auth.php            - автентикация
+│       db.php              - функции за БД
+│
+└───sql/
+        database.sql        - SQL скрипт
 
 5.4 Примерни акаунти:
 
@@ -345,15 +394,34 @@ define('SITE_URL', 'http://localhost/ProjectWeb');
 6.4 Намиране на маршрут:
 1. Изберете начална точка от падащото меню
 2. Изберете крайна точка от падащото меню
-3. Натиснете "Намери път"
-4. Резултатът показва маршрута и времето
-5. На картата се визуализира пътят
+3. Изберете вид транспорт (пеша, кола, автобус, трамвай)
+4. Натиснете "Намери път"
+5. Резултатът показва маршрута и времето
+6. На картата се визуализира пътят
+7. За градски транспорт се показва линк към разписанието в Moovit
 
-6.5 Експорт на данни:
+6.5 Видове транспорт:
+- Пеша - стандартен пешеходен маршрут
+- Кола - маршрут за автомобил с по-бърза скорост
+- Автобус №94 - маршрут през спирките на автобус 94 (Семинарията - СУ Ректорат)
+- Трамвай №10 - маршрут през спирките на трамвай 10 (Семинарията - Бул. В. Левски)
+Забележка: Градски транспорт не може да се избере ако началната и крайната 
+           точка са в един и същи кампус.
+
+6.6 Събития на локации:
+1. Кликнете върху маркер на картата
+2. В popup-а натиснете "Виж събитията"
+3. Отваря се страницата events.html със списък на събития
+4. Натиснете "Добави ново събитие" за създаване на събитие
+5. Попълнете име, описание, начало и край на събитието
+6. За да покажете интерес - кликнете върху събитие и маркирайте checkbox-а
+7. Виждате списък с всички заинтересовани потребители
+
+6.7 Експорт на данни:
 - "Експорт JSON" - запазва всички данни като JSON файл
 - "Експорт CSV" - запазва данните като CSV файлове
 
-6.6 Импорт на данни:
+6.8 Импорт на данни:
 1. Изберете JSON файл чрез бутона за файл
 2. Натиснете "Импорт"
 3. Данните се зареждат в системата
@@ -586,11 +654,89 @@ function addFavorite() {
     }).then(response => response.json())...
 }
 
-8.7 Файл: js/map.js
+Код (фрагмент 15 - Избор на транспорт и маршрутизиране):
+switch (typeOfTransport) {
+    case "bus":
+        result = campusGraph.dijkstra(startId, "25", 4, typeOfTransport);
+        result2 = campusGraph.dijkstra("26", endId, 4, typeOfTransport);
+        result.distance += 15; // време за пътуване с автобус
+        showResultLink("https://moovitapp.com/.../line-10-Sofia...");
+        break;
+    case "tram":  
+        result = campusGraph.dijkstra(startId, "27", 4, typeOfTransport); 
+        result2 = campusGraph.dijkstra("28", endId, 4, typeOfTransport);
+        result.distance += 15;
+        showResultLink("https://moovitapp.com/.../line-94...");
+        break;
+    case "walk": 
+        result = campusGraph.dijkstra(startId, endId, 4, typeOfTransport);
+        break;
+    case "car": 
+        result = campusGraph.dijkstra(startId, endId, 30, typeOfTransport); 
+        break;
+}
+
+8.7 Файл: js/events.js
+
+Цел: Логика за събития и заинтересованост
+
+Код (фрагмент 16 - Зареждане на събития за локация):
+function fetchEvents(nodeId) {
+    fetch(`php/api.php?action=get_events&node_id=${nodeId}`)
+        .then(response => response.json())
+        .then(data => {
+            if (!data.success || data.data.length === 0) {
+                container.innerHTML = '<p>Няма събития за тази локация.</p>';
+                return;
+            }
+            // Филтриране на минали събития
+            data.data.forEach(event => {
+                const eventEnd = new Date(event.end_time);
+                if (eventEnd < now) return;
+                // Render event...
+            });
+        });
+}
+
+Код (фрагмент 17 - Добавяне на събитие):
+addEventForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const formData = new FormData(addEventForm);
+    formData.append('node_id', nodeId);
+    
+    fetch('php/api.php?action=add_event', {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.success) {
+            alert('Събитието е добавено успешно!');
+            fetchEvents(nodeId); // Презареждане на списъка
+        }
+    });
+});
+
+Код (фрагмент 18 - Маркиране на заинтересованост):
+function handleInterestChange(eventId, isInterested) {
+    const action = isInterested ? 'add_event_interest' : 'delete_event_interest';
+    
+    fetch(`php/api.php?action=${action}&event_id=${eventId}`, {
+        method: 'POST'
+    })
+    .then(r => r.json())
+    .then(data => {
+        if (data.success) {
+            fetchEventInterests(eventId); // Обновяване на списъка
+        }
+    });
+}
+
+8.8 Файл: js/map.js
 
 Цел: Работа с Leaflet карта и routing
 
-Код (фрагмент 15 - Indoor vs Outdoor routing):
+Код (фрагмент 19 - Indoor vs Outdoor routing):
 if (start[2] === end[2]) {
     // Вътрешен път - пунктирана линия
     const polyline = L.polyline(waypoints, {
@@ -606,11 +752,11 @@ if (start[2] === end[2]) {
     }).addTo(this.map);
 }
 
-8.8 Файл: sql/database.sql
+8.9 Файл: sql/database.sql
 
 Цел: Създаване на таблици и примерни данни
 
-Код (фрагмент 16 - CREATE TABLE users):
+Код (фрагмент 20 - CREATE TABLE users):
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -619,17 +765,52 @@ CREATE TABLE users (
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
-Код (фрагмент 17 - CREATE TABLE nodes):
+Код (фрагмент 21 - CREATE TABLE nodes):
 CREATE TABLE nodes (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
-    lat DECIMAL(10, 7) NOT NULL,
-    lng DECIMAL(10, 7) NOT NULL,
+    lat DECIMAL(11, 8) NOT NULL,
+    lng DECIMAL(11, 8) NOT NULL,
     floor INT DEFAULT 1,
-    building VARCHAR(100)
+    building_id VARCHAR(100),
+    hidden BOOLEAN DEFAULT False,
+    connection BOOLEAN DEFAULT true,
+    connection_from INT NULL,
+    connection_to INT NULL
 );
 
-Код (фрагмент 18 - CREATE TABLE edges):
+Код (фрагмент 22 - CREATE TABLE events):
+CREATE TABLE events (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name varchar(255) NOT NULL,
+    description varchar(512),
+    node_id INT NOT NULL,
+    start_time DATETIME NOT NULL,
+    end_time DATETIME NOT NULL,
+    FOREIGN KEY (node_id) REFERENCES nodes(id) ON DELETE CASCADE
+);
+
+Код (фрагмент 23 - CREATE TABLE event_interests):
+CREATE TABLE event_interests (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    event_id INT NOT NULL,
+    user_id INT NOT NULL,
+    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    UNIQUE KEY unique_event_user (event_id, user_id)
+);
+
+Код (фрагмент 24 - CREATE TABLE public_transport):
+CREATE TABLE public_transport (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    line_name VARCHAR(10),
+    stop_name VARCHAR(255),
+    lat DECIMAL(10, 8),
+    lng DECIMAL(11, 8),
+    vehicle_type VARCHAR(20)
+);
+
+Код (фрагмент 25 - CREATE TABLE edges):
 CREATE TABLE edges (
     id INT AUTO_INCREMENT PRIMARY KEY,
     node_from INT NOT NULL,
@@ -639,7 +820,7 @@ CREATE TABLE edges (
     FOREIGN KEY (node_to) REFERENCES nodes(id) ON DELETE CASCADE
 );
 
-Код (фрагмент 19 - CREATE TABLE favorites):
+Код (фрагмент 26 - CREATE TABLE favorites):
 CREATE TABLE favorites (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -650,6 +831,23 @@ CREATE TABLE favorites (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     UNIQUE KEY unique_favorite (user_id, node_from, node_to)
 );
+
+8.10 Файл: php/api.php - API Endpoints
+
+Налични API endpoints:
+- get_nodes - всички локации
+- get_nodes_with_building - локации с информация за сграда
+- get_node - единична локация по ID
+- add_node, update_node, delete_node - CRUD за локации
+- get_edges, add_edge, delete_edge - CRUD за връзки
+- get_events - събития за локация (по node_id)
+- add_event - добавяне на събитие
+- get_event_interests - заинтересовани потребители
+- add_event_interest, delete_event_interest - маркиране на интерес
+- get_favorites, add_favorite, delete_favorite - любими маршрути
+- get_bus_stops - спирки на автобус
+- get_tram_stops - спирки на трамвай
+- export - експорт на всички данни
 
 ================================================================================
 9. ПРИНОСИ, ОГРАНИЧЕНИЯ И ВЪЗМОЖНОСТИ ЗА РАЗШИРЕНИЕ
@@ -672,20 +870,23 @@ CREATE TABLE favorites (
 - Автоматично генериране на връзки между зали в една сграда
 - Логика за вътрешни пътища (indoor) вс. външни маршрути (outdoor)
 - Скрити възли (hidden nodes) за пътеки между сгради
+- Интеграция на градски транспорт (автобус, трамвай) с Moovit линкове
 
 Михаил Цветков:
 - Проектиране и създаване на MySQL базата данни (sql/database.sql)
 - PHP функции за работа с базата данни чрез PDO (php/db.php)
 - REST API за CRUD операции (php/api.php)
-- Конфигурационен файл (php/config.php)
 - Система за регистрация и автентикация (php/auth.php)
 - Функционалност за любими маршрути (запазване, използване, изтриване)
+- API endpoints за събития и заинтересованост
 
 Жулиета Янева:
 - Импорт и експорт на данни в JSON/CSV формат
 - Форми за вход и регистрация (login.php, register.php)
 - CSS стилове за автентикация (css/auth.css)
 - Общ дизайн и потребителски интерфейс (css/style.css)
+- Страница за събития (events.html, css/events_style.css)
+- JavaScript логика за събития (js/events.js)
 
 9.2 Текущо състояние:
 
@@ -694,22 +895,29 @@ CREATE TABLE favorites (
 - Бизнес логика: PHP с PDO
 - База данни: MySQL
 
+Реализирани допълнителни функционалности:
+- Избор на транспортно средство (пеша, кола, автобус, трамвай)
+- Събития на локации с възможност за добавяне и маркиране на интерес
+- Интеграция със спирки на градски транспорт
+
 9.3 Ограничения:
 
 - Няма административен панел за управление през уеб интерфейс
 - Няма роли с различни права (admin/user)
-- Само пешеходен транспорт
 - Няма етажни планове на сгради
 - Не работи офлайн (изисква интернет за картите)
+- Ограничен брой линии на градски транспорт (автобус №94, трамвай №10)
 
 9.4 Възможности за разширение:
 
 - Административен панел за CRUD операции през интерфейса
 - Система с роли (администратор, потребител, гост)
-- Различни видове транспорт (велосипед, градски транспорт)
+- Допълнителни линии на градски транспорт
 - Етажни планове на сгради
 - Мобилно приложение (PWA)
 - Интеграция с разписания на занятия
+- Нотификации за предстоящи събития
+- Коментари към събития
 
 ================================================================================
 10. ИЗПОЛЗВАНЕ НА AI
