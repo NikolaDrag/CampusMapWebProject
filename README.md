@@ -81,6 +81,8 @@ CampusMapWebProject/
 
 ## Инструкции за пускане
 
+### Вариант А: Стандартно (в htdocs)
+
 1. **Стартирайте XAMPP:** Apache + MySQL
 2. **Създайте база данни:**
    - Отворете `http://localhost/phpmyadmin`
@@ -89,4 +91,35 @@ CampusMapWebProject/
 3. **Копирайте проекта:** В `C:\xampp\htdocs\ProjectWeb`
 4. **Отворете:** `http://localhost/ProjectWeb/`
 
-**Пълна документация:** Вижте [DOKUMENTACIA.txt](DOKUMENTACIA.txt)
+---
+
+### Вариант Б: Проектът е на Desktop (с ФН номера)
+
+Ако папката е на Desktop (напр. `1MI0800237_4MI0800188_7MI0800207_5MI0800245`):
+
+1. **Стартирайте XAMPP:** Apache + MySQL
+
+2. **Импортирайте базата данни:**
+   - Отворете `http://localhost/phpmyadmin`
+   - Кликнете "Import" → изберете `sql/database.sql` → "Go"
+
+3. **Конфигурирайте Apache:**
+   - Отворете файл: `C:\xampp\apache\conf\httpd.conf`
+   - Добавете накрая (заменете `ИмеНаПотребител` с вашето):
+   ```apache
+   Alias /campus "C:/Users/ИмеНаПотребител/Desktop/1MI0800237_4MI0800188_7MI0800207_5MI0800245"
+   <Directory "C:/Users/ИмеНаПотребител/Desktop/1MI0800237_4MI0800188_7MI0800207_5MI0800245">
+       AllowOverride All
+       Require all granted
+   </Directory>
+   ```
+
+4. **Рестартирайте Apache** от XAMPP Control Panel (Stop → Start)
+
+5. **Отворете:** `http://localhost/campus/`
+
+**Забележка:** В пътя използвайте `/` (forward slash), не `\`
+
+---
+
+**Пълна документация:** Вижте [DocumentaciqWord.docx](DocumentaciqWord.docx)
