@@ -1,23 +1,19 @@
 ================================================================================
 ДОКУМЕНТАЦИЯ ЗА ПРОЕКТ ПО УЕБ ТЕХНОЛОГИИ
 ================================================================================
-
 Имена:  Никола Драгнев (ФН: 1MI0800237), Георги Николов (ФН: 4MI0800188), 
         Михаил Цветков (ФН: 7MI0800207), Жулиета Янева (ФН: 5MI0800245)
 Начална година: 2025        Програма:  бакалавър, (КН)    Курс:   4  
 Тема:  Визуализация и навигация в университетски кампус
 Дата:  2026-01-28           Предмет: w26prj_KN_final      имейл: nikola.dr125@gmail.com, kofa123123@abv.bg, mihail.tsvetkov.04@gmail.com, zhulieta.yaneva4@gmail.com
 Преподавател: проф. д-р Милен Петров
-
 ================================================================================
 1. УСЛОВИЕ
 ================================================================================
-
 Разработване на уеб приложение за визуализация на университетски кампус ФМИ, ФЗФ, ФХФ, Ректорат върху 
 карта (OpenStreetMap) с функционалност за намиране на най-кратък път между 
 учебни зали и сгради. Системата използва трислойна архитектура с MySQL база 
 данни за съхранение на данни за локации и потребители.
-
 Основни изисквания:
 - Визуализация на сгради/зали върху интерактивна карта (OpenStreetMap)
 - Представяне на кампуса като граф структура
@@ -26,15 +22,12 @@
 - Съхранение на данни в MySQL база данни
 - Система за регистрация и автентикация на потребители
 - CRUD операции за управление на зали и връзки
-
 ================================================================================
 2. ВЪВЕДЕНИЕ - ИЗВЛИЧАНЕ НА ИЗИСКВАНИЯ
 ================================================================================
-
 2.1 Роли:
 - Гост - преглед на картата, търсене на маршрут (без регистрация)
 - Потребител - регистриран потребител с достъп до системата
-
 2.2 Функционални изисквания:
 - Визуализация на интерактивна карта с маркери за всяка зала/сграда
 - Падащо меню за избор на начална и крайна точка
@@ -58,7 +51,6 @@
 - Линкове към разписания на градски транспорт (Moovit)
 - Събития на локации - преглед, добавяне на събития
 - Заинтересованост от събития - маркиране и списък на заинтересовани потребители
-
 2.3 Нефункционални изисквания:
 - Трислойна архитектура (презентация, бизнес логика, данни)
 - Конфигурируемост чрез единен конфигурационен файл (config.php)
@@ -68,15 +60,12 @@
 - Сесии за управление на автентикацията
 - Лесна употреба и интуитивен интерфейс
 - Бързо зареждане и отзивчивост
-
 2.4 Ползи от реализацията:
 - Лесна навигация в големи университетски кампуси
-- Оптимизиране на време между занятия
+- Оптимизиране на време între занятия
 - Визуална представа за разположението на учебните зали
 - Централизирано съхранение на данни в база данни
-
 2.5 Структура на файловете:
-
 CampusMapWebProject/
 │   .gitignore              - Git ignore файл
 │   .htaccess               - Apache конфигурация
@@ -108,15 +97,11 @@ CampusMapWebProject/
 │
 └───sql/
         database.sql        - SQL скрипт
-
 ================================================================================
 3. ТЕОРИЯ - АНАЛИЗ И ПРОЕКТИРАНЕ НА РЕШЕНИЕТО
 ================================================================================
-
 3.1 Архитектура на системата:
-
 Трислойна архитектура:
-
 +--------------------------------------------------+
 |           ПРЕЗЕНТАЦИОНЕН СЛОЙ                    |
 |  HTML, CSS, JavaScript, Leaflet                  |
@@ -136,7 +121,6 @@ CampusMapWebProject/
 |           СЛОЙ ЗА ДАННИ (MySQL)                  |
 |  Таблици: users, nodes, edges                    |
 +--------------------------------------------------+
-
 3.2 Структура на базата данни:
 
 Таблица users:
@@ -178,14 +162,13 @@ CampusMapWebProject/
 - description (VARCHAR 512) - описание
 - node_id (INT, FOREIGN KEY -> nodes.id) - локация
 - start_time (DATETIME) - начало
-- end_time (DATETIME) - край
+- end_time (DATETIME) – край
 
 Таблица event_interests:
 - id (INT, PRIMARY KEY, AUTO_INCREMENT)
 - event_id (INT, FOREIGN KEY -> events.id)
 - user_id (INT, FOREIGN KEY -> users.id)
 - UNIQUE KEY (event_id, user_id)
-
 Таблица public_transport:
 - id (INT, PRIMARY KEY, AUTO_INCREMENT)
 - line_name (VARCHAR 10) - номер на линията
@@ -193,9 +176,7 @@ CampusMapWebProject/
 - lat (DECIMAL 10,8) - географска ширина
 - lng (DECIMAL 11,8) - географска дължина
 - vehicle_type (VARCHAR 20) - тип превозно средство (Bus, Tram)
-
 3.3 Декомпозиция на модулите:
-
 а) Презентационен слой:
    - index.html - главна страница с карта и навигация
    - events.html - страница за събития на локации
@@ -204,65 +185,41 @@ CampusMapWebProject/
    - css/style.css - основни стилове
    - css/auth.css - стилове за форми за вход/регистрация
    - css/events_style.css - стилове за страницата със събития
-
 б) JavaScript модули:
    - js/graph.js - граф структура и алгоритъм на Dijkstra
    - js/map.js - работа с Leaflet и OpenStreetMap
    - js/app.js - основна логика на приложението, избор на транспорт
    - js/events.js - логика за събития (CRUD, заинтересованост)
-
 в) PHP модули:
    - php/db.php - функции за работа с базата данни
    - php/api.php - REST API за CRUD операции (nodes, edges, events, transport)
    - php/auth.php - автентикация (login, register, logout)
-
 г) SQL скриптове:
    - sql/database.sql - създаване на таблици и примерни данни
-
 3.4 Алгоритъм на Dijkstra:
-
 Използван е класически алгоритъм на Dijkstra за намиране на най-кратък път.
 Алгоритъмът работи с тегловен граф, където тежестите са време в минути.
-
 Сложност: O((V + E) log V)
-
 ================================================================================
 4. ИЗПОЛЗВАНИ ТЕХНОЛОГИИ
 ================================================================================
-
 4.1 Сървърна страна:
-- PHP 7.4+ (тествано с PHP 8.x)
-- MySQL 5.7+ / MariaDB 10.x
-- XAMPP (Apache + MySQL + PHP)
-
+- PHP 7.4+, MySQL 5.7+, XAMPP
 4.2 Клиентска страна:
-- HTML5
-- CSS3
-- JavaScript (ES6)
-- Leaflet 1.9.4 (библиотека за карти)
-
+- HTML5, CSS3, JavaScript (ES6), Leaflet 1.9.4
 4.3 Карти:
-- OpenStreetMap (безплатни картографски данни)
-- Leaflet (JavaScript библиотека)
-
+- OpenStreetMap, Leaflet
 4.4 Среда за разработка:
-- Visual Studio Code
-- XAMPP Control Panel
-- phpMyAdmin (за управление на MySQL)
-
+- Visual Studio Code, XAMPP, phpMyAdmin
 4.5 Операционна система:
-- Windows 10/11 (разработка)
-- Съвместимо с Linux/macOS
-
+- Windows 10/11, Linux/macOS
 ================================================================================
 5. ИНСТАЛАЦИЯ, НАСТРОЙКИ И DEVOPS
 ================================================================================
-
 5.1 Изисквания:
 - XAMPP (или еквивалент с Apache, PHP, MySQL)
 - Уеб браузър с поддръжка на JavaScript
 - Интернет връзка (за Leaflet и OpenStreetMap)
-
 5.2 Стъпки за инсталация:
 
 Стъпка 1: Инсталиране на XAMPP
@@ -345,19 +302,10 @@ CampusMapWebProject/
 4. Отворете http://localhost/campus/
 
 ─────────────────────────────────────────────────────────────────────────────────
-
 5.3 Примерни акаунти:
-
-Администратор:
-- Потребител: admin
-- Парола: password
-
-Обикновен потребител:
-- Потребител: user
-- Парола: password
-
-5.5 Конфигурационен файл (php/config.php):
-
+Администратор: admin / password
+Обикновен потребител: user / password
+5.4 Конфигурационен файл (php/config.php):
 // Настройки на базата данни
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'campus_navigator');
@@ -366,11 +314,9 @@ define('DB_PASS', '');
 
 // URL на сайта
 define('SITE_URL', 'http://localhost/ProjectWeb');
-
 ================================================================================
 6. КРАТКО РЪКОВОДСТВО НА ПОТРЕБИТЕЛЯ
 ================================================================================
-
 6.1 Регистрация:
 1. Отворете register.php
 2. Въведете потребителско име (минимум 3 символа)
@@ -378,19 +324,16 @@ define('SITE_URL', 'http://localhost/ProjectWeb');
 4. Въведете парола (минимум 6 символа)
 5. Повторете паролата
 6. Натиснете бутона "Регистрация"
-
 6.2 Вход в системата:
 1. Отворете login.php
 2. Въведете потребителско име или email
 3. Въведете парола
 4. Натиснете бутона "Вход"
-
 6.3 Преглед на картата:
 - При зареждане се показва интерактивна карта
 - Картата може да се движи с мишка
 - Zoom с колелцето на мишката или бутоните +/-
 - Кликнете върху маркер за информация за залата
-
 6.4 Намиране на маршрут:
 1. Изберете начална точка от падащото меню
 2. Изберете крайна точка от падащото меню
@@ -399,15 +342,12 @@ define('SITE_URL', 'http://localhost/ProjectWeb');
 5. Резултатът показва маршрута и времето
 6. На картата се визуализира пътят
 7. За градски транспорт се показва линк към разписанието в Moovit
-
 6.5 Видове транспорт:
-- Пеша - стандартен пешеходен маршрут
-- Кола - маршрут за автомобил с по-бърза скорост
-- Автобус №94 - маршрут през спирките на автобус 94 (Семинарията - СУ Ректорат)
-- Трамвай №10 - маршрут през спирките на трамвай 10 (Семинарията - Бул. В. Левски)
-Забележка: Градски транспорт не може да се избере ако началната и крайната 
-           точка са в един и същи кампус.
-
+- Пеша - пешеходен маршрут
+- Кола - автомобилен маршрут
+- Автобус №94 - през спирките на автобус 94
+- Трамвай №10 - през спирките на трамвай 10
+Забележка: Градски транспорт - само ако начална и крайна точка са в различни кампуси.
 6.6 Събития на локации:
 1. Кликнете върху маркер на картата
 2. В popup-а натиснете "Виж събитията"
@@ -416,20 +356,16 @@ define('SITE_URL', 'http://localhost/ProjectWeb');
 5. Попълнете име, описание, начало и край на събитието
 6. За да покажете интерес - кликнете върху събитие и маркирайте checkbox-а
 7. Виждате списък с всички заинтересовани потребители
-
 6.7 Експорт на данни:
 - "Експорт JSON" - запазва всички данни като JSON файл
 - "Експорт CSV" - запазва данните като CSV файлове
-
 6.8 Импорт на данни:
 1. Изберете JSON файл чрез бутона за файл
 2. Натиснете "Импорт"
 3. Данните се зареждат в системата
-
 ================================================================================
 7. ПРИМЕРНИ ДАННИ
 ================================================================================
-
 7.1 Примерни локации (таблица nodes):
 
 ID  Име                      Latitude    Longitude   Етаж  Сграда
@@ -439,7 +375,6 @@ ID  Име                      Latitude    Longitude   Етаж  Сграда
 3   Зала 201 - Семинарна     42.6930000  23.3345000  2     Корпус А
 4   Библиотека               42.6925000  23.3360000  1     Корпус Б
 5   Кафене/Стол              42.6935000  23.3330000  0     Централно
-
 7.2 Примерни връзки (таблица edges):
 
 ID  От  До  Време(мин)
@@ -451,14 +386,12 @@ ID  От  До  Време(мин)
 5   3   4   4
 6   4   5   6
 7   2   3   3
-
 7.3 Примерни потребители (таблица users):
 
 ID  Потребител  Email             Парола
 --  ----------  ----------------  --------
 1   admin       admin@campus.bg   password
 2   user        user@campus.bg    password
-
 7.4 Тестови сценарии:
 
 Сценарий 1: Регистрация на нов потребител
@@ -472,144 +405,76 @@ ID  Потребител  Email             Парола
 Сценарий 3: Намиране на път от Зала 101 до Библиотека
 - Избор: Зала 101 -> Библиотека
 - Очакван резултат: 101 -> 201 -> Библиотека (6 минути)
-
 7.5 SQL файл за тестване:
 - sql/database.sql - съдържа CREATE TABLE и INSERT за всички данни
-
 ================================================================================
 8. ОПИСАНИЕ НА ПРОГРАМНИЯ КОД
 ================================================================================
-
 8.1 Файл: php/config.php
-
 Цел: Централизирани настройки на приложението
-
-Код (фрагмент 1):
-// Настройки на базата данни
+Код:
 define('DB_HOST', 'localhost');
 define('DB_NAME', 'campus_navigator');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-
 8.2 Файл: php/db.php
-
 Цел: Абстракция за работа с MySQL чрез PDO
-
-Код (фрагмент 2 - Връзка с базата):
+Код (Връзка с базата):
 function getDBConnection() {
     static $pdo = null;
     if ($pdo === null) {
-        $dsn = "mysql:host=" . DB_HOST . ";dbname=" . DB_NAME;
         $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
     }
     return $pdo;
 }
-
-Код (фрагмент 3 - INSERT функция):
+Код (INSERT/DELETE):
 function dbInsert($sql, $params = []) {
-    $pdo = getDBConnection();
-    $stmt = $pdo->prepare($sql);
+    $stmt = getDBConnection()->prepare($sql);
     $stmt->execute($params);
     return $pdo->lastInsertId();
 }
-
-Код (фрагмент 4 - DELETE функция):
-function dbDelete($sql, $params = []) {
-    $pdo = getDBConnection();
-    $stmt = $pdo->prepare($sql);
-    $stmt->execute($params);
-    return $stmt->rowCount();
-}
-
 8.3 Файл: php/api.php
-
 Цел: REST API за CRUD операции със зали
-
-Код (фрагмент 5 - SELECT всички зали):
+Код (SELECT/INSERT):
 case 'get_nodes':
     $nodes = dbSelect("SELECT * FROM nodes ORDER BY name");
     echo json_encode(['success' => true, 'data' => $nodes]);
     break;
-
-Код (фрагмент 6 - INSERT нова зала):
 case 'add_node':
-    $sql = "INSERT INTO nodes (name, lat, lng, floor, building) 
-            VALUES (?, ?, ?, ?, ?)";
-    $id = dbInsert($sql, [$name, $lat, $lng, $floor, $building]);
-    echo json_encode(['success' => true, 'id' => $id]);
+    $id = dbInsert("INSERT INTO nodes (name, lat, lng) VALUES (?, ?, ?)", ...);
     break;
-
-Код (фрагмент 7 - UPDATE зала):
-case 'update_node':
-    $sql = "UPDATE nodes SET name=?, lat=?, lng=?, floor=?, building=? 
-            WHERE id=?";
-    $affected = dbUpdate($sql, [$name, $lat, $lng, $floor, $building, $id]);
-    break;
-
-Код (фрагмент 8 - DELETE зала):
-case 'delete_node':
-    dbDelete("DELETE FROM edges WHERE node_from=? OR node_to=?", [$id, $id]);
-    dbDelete("DELETE FROM nodes WHERE id = ?", [$id]);
-    break;
-
 8.4 Файл: php/auth.php
-
 Цел: Функции за регистрация и вход
-
-Код (фрагмент 9 - Регистрация):
+Код (Регистрация):
 function registerUser($username, $email, $password) {
     $passwordHash = password_hash($password, PASSWORD_DEFAULT);
-    $sql = "INSERT INTO users (username, email, password_hash, created_at) 
-            VALUES (?, ?, ?, NOW())";
     $userId = dbInsert($sql, [$username, $email, $passwordHash]);
     return ['success' => true, 'user_id' => $userId];
 }
-
-Код (фрагмент 10 - Вход):
+Код (Вход):
 function loginUser($username, $password) {
-    $user = dbSelectOne(
-        "SELECT * FROM users WHERE username = ? OR email = ?",
-        [$username, $username]
-    );
-    if (!password_verify($password, $user['password_hash'])) {
-        return ['success' => false, 'error' => 'Грешна парола'];
-    }
+    $user = dbSelectOne("SELECT * FROM users WHERE username = ?", ...);
+    if (!password_verify($password, $user['password_hash'])) return error;
     $_SESSION['user_id'] = $user['id'];
-    $_SESSION['logged_in'] = true;
     return ['success' => true];
 }
-
 8.5 Файл: js/graph.js
-
 Цел: Граф структура и алгоритъм на Dijkstra
-
-Код (фрагмент 11 - Dijkstra алгоритъм):
+Код (Dijkstra алгоритъм):
 dijkstra(startId, endId) {
-    const distances = {};
-    const previous = {};
-    
-    for (let nodeId in this.nodes) {
-        distances[nodeId] = Infinity;
-        previous[nodeId] = null;
-    }
+    const distances = {}, previous = {};
+    for (let nodeId in this.nodes) distances[nodeId] = Infinity;
     distances[startId] = 0;
-    
     while (queue.length > 0) {
-        queue.sort((a, b) => a.distance - b.distance);
         const current = queue.shift();
-        
-        const neighbors = this.adjacencyList[current.id];
-        for (let neighborId in neighbors) {
-            const newDistance = distances[current.id] + neighbors[neighborId];
-            if (newDistance < distances[neighborId]) {
-                distances[neighborId] = newDistance;
+        for (let neighborId in this.adjacencyList[current.id]) {
+            const newDist = distances[current.id] + neighbors[neighborId];
+            if (newDist < distances[neighborId]) {
+                distances[neighborId] = newDist;
                 previous[neighborId] = current.id;
             }
         }
     }
     return { path, distance: distances[endId] };
 }
-
 8.6 Файл: js/app.js
 
 Цел: Главна логика, автентикация, любими маршрути
@@ -677,163 +542,49 @@ switch (typeOfTransport) {
 }
 
 8.7 Файл: js/events.js
-
 Цел: Логика за събития и заинтересованост
-
-Код (фрагмент 16 - Зареждане на събития за локация):
+Код (Зареждане на събития):
 function fetchEvents(nodeId) {
     fetch(`php/api.php?action=get_events&node_id=${nodeId}`)
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success || data.data.length === 0) {
-                container.innerHTML = '<p>Няма събития за тази локация.</p>';
-                return;
-            }
-            // Филтриране на минали събития
-            data.data.forEach(event => {
-                const eventEnd = new Date(event.end_time);
-                if (eventEnd < now) return;
-                // Render event...
-            });
-        });
+        .then(r => r.json())
+        .then(data => data.data.forEach(event => renderEvent(event)));
 }
-
-Код (фрагмент 17 - Добавяне на събитие):
-addEventForm.addEventListener('submit', (e) => {
-    e.preventDefault();
-    const formData = new FormData(addEventForm);
-    formData.append('node_id', nodeId);
-    
-    fetch('php/api.php?action=add_event', {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.success) {
-            alert('Събитието е добавено успешно!');
-            fetchEvents(nodeId); // Презареждане на списъка
-        }
-    });
-});
-
-Код (фрагмент 18 - Маркиране на заинтересованост):
+Код (Маркиране заинтересованост):
 function handleInterestChange(eventId, isInterested) {
     const action = isInterested ? 'add_event_interest' : 'delete_event_interest';
-    
-    fetch(`php/api.php?action=${action}&event_id=${eventId}`, {
-        method: 'POST'
-    })
-    .then(r => r.json())
-    .then(data => {
-        if (data.success) {
-            fetchEventInterests(eventId); // Обновяване на списъка
-        }
-    });
+    fetch(`php/api.php?action=${action}&event_id=${eventId}`, { method: 'POST' });
 }
-
 8.8 Файл: js/map.js
-
 Цел: Работа с Leaflet карта и routing
-
-Код (фрагмент 19 - Indoor vs Outdoor routing):
+Код (Indoor vs Outdoor routing):
 if (start[2] === end[2]) {
-    // Вътрешен път - пунктирана линия
-    const polyline = L.polyline(waypoints, {
-        color: color, weight: 5,
-        dashArray: '10, 10', opacity: 0.9
-    }).addTo(this.map);
+    L.polyline(waypoints, { dashArray: '10, 10' }).addTo(this.map); // Вътрешен
 } else {
-    // Външен път - Leaflet Routing Machine
-    const control = L.Routing.control({
-        waypoints: waypoints,
-        createMarker: () => null,
-        lineOptions: { styles: [{ color, weight: 6, opacity: 0.8 }] }
-    }).addTo(this.map);
+    L.Routing.control({ waypoints }).addTo(this.map); // Външен
 }
-
 8.9 Файл: sql/database.sql
-
 Цел: Създаване на таблици и примерни данни
-
-Код (фрагмент 20 - CREATE TABLE users):
+Код (CREATE TABLE):
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    username VARCHAR(50) NOT NULL UNIQUE,
-    email VARCHAR(100) NOT NULL UNIQUE,
-    password_hash VARCHAR(255) NOT NULL,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    username VARCHAR(50) UNIQUE, email VARCHAR(100) UNIQUE,
+    password_hash VARCHAR(255), created_at DATETIME
 );
-
-Код (фрагмент 21 - CREATE TABLE nodes):
 CREATE TABLE nodes (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    lat DECIMAL(11, 8) NOT NULL,
-    lng DECIMAL(11, 8) NOT NULL,
-    floor INT DEFAULT 1,
-    building_id VARCHAR(100),
-    hidden BOOLEAN DEFAULT False,
-    connection BOOLEAN DEFAULT true,
-    connection_from INT NULL,
-    connection_to INT NULL
+    name VARCHAR(100), lat DECIMAL(11,8), lng DECIMAL(11,8),
+    floor INT, building_id VARCHAR(100), hidden BOOLEAN
 );
-
-Код (фрагмент 22 - CREATE TABLE events):
-CREATE TABLE events (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    name varchar(255) NOT NULL,
-    description varchar(512),
-    node_id INT NOT NULL,
-    start_time DATETIME NOT NULL,
-    end_time DATETIME NOT NULL,
-    FOREIGN KEY (node_id) REFERENCES nodes(id) ON DELETE CASCADE
-);
-
-Код (фрагмент 23 - CREATE TABLE event_interests):
-CREATE TABLE event_interests (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    event_id INT NOT NULL,
-    user_id INT NOT NULL,
-    FOREIGN KEY (event_id) REFERENCES events(id) ON DELETE CASCADE,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_event_user (event_id, user_id)
-);
-
-Код (фрагмент 24 - CREATE TABLE public_transport):
-CREATE TABLE public_transport (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    line_name VARCHAR(10),
-    stop_name VARCHAR(255),
-    lat DECIMAL(10, 8),
-    lng DECIMAL(11, 8),
-    vehicle_type VARCHAR(20)
-);
-
-Код (фрагмент 25 - CREATE TABLE edges):
 CREATE TABLE edges (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    node_from INT NOT NULL,
-    node_to INT NOT NULL,
-    weight INT NOT NULL DEFAULT 1,
-    FOREIGN KEY (node_from) REFERENCES nodes(id) ON DELETE CASCADE,
-    FOREIGN KEY (node_to) REFERENCES nodes(id) ON DELETE CASCADE
+    node_from INT, node_to INT, weight INT,
+    FOREIGN KEY (node_from) REFERENCES nodes(id)
 );
-
-Код (фрагмент 26 - CREATE TABLE favorites):
-CREATE TABLE favorites (
+CREATE TABLE events (
     id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    node_from VARCHAR(50) NOT NULL,
-    node_to VARCHAR(50) NOT NULL,
-    name VARCHAR(100) DEFAULT '',
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    UNIQUE KEY unique_favorite (user_id, node_from, node_to)
+    name VARCHAR(255), node_id INT, start_time DATETIME, end_time DATETIME
 );
-
 8.10 Файл: php/api.php - API Endpoints
-
 Налични API endpoints:
 - get_nodes - всички локации
 - get_nodes_with_building - локации с информация за сграда
@@ -845,51 +596,17 @@ CREATE TABLE favorites (
 - get_event_interests - заинтересовани потребители
 - add_event_interest, delete_event_interest - маркиране на интерес
 - get_favorites, add_favorite, delete_favorite - любими маршрути
-- get_bus_stops - спирки на автобус
-- get_tram_stops - спирки на трамвай
+- get_bus_stops, get_tram_stops - спирки на транспорт
 - export - експорт на всички данни
-
 ================================================================================
 9. ПРИНОСИ, ОГРАНИЧЕНИЯ И ВЪЗМОЖНОСТИ ЗА РАЗШИРЕНИЕ
 ================================================================================
-
 9.1 Разпределение на работата по студенти:
-
-Никола Драгнев (ФН: 1MI0800237):
-- Реализация на граф структурата (CampusGraph) / структура на проекта (js/graph.js)
-- Имплементация на алгоритъма на Dijkstra за най-кратък път
-- Съседски списък (adjacency list) за представяне на графа
-- Функции за добавяне на възли (addNode) и връзки (addEdge)
-- Реконструкция на пътя след Dijkstra (възстановяване на маршрута от previous масива)
-- Документация на проекта
-
-Георги Николов (ФН: 4MI0800188):
-- Кодиране на реалните GPS координати на залите в СУ (ФМИ, ФЗФ, ФХФ, Ректорат)
-- Интеграция на Leaflet Routing Machine за реални маршрути по улици
-- Изчисляване на разстояния с Haversine формула (getDistance)
-- Автоматично генериране на връзки между зали в една сграда
-- Логика за вътрешни пътища (indoor) вс. външни маршрути (outdoor)
-- Скрити възли (hidden nodes) за пътеки между сгради
-- Интеграция на градски транспорт (автобус, трамвай) с Moovit линкове
-
-Михаил Цветков:
-- Проектиране и създаване на MySQL базата данни (sql/database.sql)
-- PHP функции за работа с базата данни чрез PDO (php/db.php)
-- REST API за CRUD операции (php/api.php)
-- Система за регистрация и автентикация (php/auth.php)
-- Функционалност за любими маршрути (запазване, използване, изтриване)
-- API endpoints за събития и заинтересованост
-
-Жулиета Янева:
-- Импорт и експорт на данни в JSON/CSV формат
-- Форми за вход и регистрация (login.php, register.php)
-- CSS стилове за автентикация (css/auth.css)
-- Общ дизайн и потребителски интерфейс (css/style.css)
-- Страница за събития (events.html, css/events_style.css)
-- JavaScript логика за събития (js/events.js)
-
+Никола Драгнев (1MI0800237): Граф структура, Dijkstra, документация
+Георги Николов (4MI0800188): GPS координати, Leaflet Routing, Haversine, градски транспорт
+Михаил Цветков: MySQL база, PDO, REST API, автентикация, любими маршрути
+Жулиета Янева: Импорт/експорт, форми, CSS стилове, събития
 9.2 Текущо състояние:
-
 Реализирана е работеща система с трислойна архитектура:
 - Презентационен слой: HTML, CSS, JavaScript, Leaflet
 - Бизнес логика: PHP с PDO
@@ -899,17 +616,13 @@ CREATE TABLE favorites (
 - Избор на транспортно средство (пеша, кола, автобус, трамвай)
 - Събития на локации с възможност за добавяне и маркиране на интерес
 - Интеграция със спирки на градски транспорт
-
 9.3 Ограничения:
-
 - Няма административен панел за управление през уеб интерфейс
 - Няма роли с различни права (admin/user)
 - Няма етажни планове на сгради
 - Не работи офлайн (изисква интернет за картите)
 - Ограничен брой линии на градски транспорт (автобус №94, трамвай №10)
-
 9.4 Възможности за разширение:
-
 - Административен панел за CRUD операции през интерфейса
 - Система с роли (администратор, потребител, гост)
 - Допълнителни линии на градски транспорт
@@ -918,118 +631,43 @@ CREATE TABLE favorites (
 - Интеграция с разписания на занятия
 - Нотификации за предстоящи събития
 - Коментари към събития
-
 ================================================================================
 10. ИЗПОЛЗВАНЕ НА AI
 ================================================================================
-
 AI инструмент: GitHub Copilot (Claude)
-
 Използвани промптове:
-
-Промпт 1: "Генерирай примерни JSON данни за campus.json с 5-6 локации от 
-кампуса на СУ (ФМИ, библиотека, ректорат) с координати и връзки между тях."
-
-Промпт 2: "Помогни ми да оптимизирам CSS стиловете за мобилни устройства - 
-добави media queries за responsive дизайн на навигационното меню."
-
-Промпт 3: "Напиши SQL INSERT заявки за примерни данни в таблиците nodes и 
-edges за тестване на приложението."
-
-Промпт 4: "Провери синтаксиса на Dijkstra имплементацията и предложи подобрения 
-за edge cases (недостижими възли, празен граф)."
-
-Резултат: Допълване на примерни данни и финални корекции по съществуващия код.
-
+1. "Генерирай JSON данни за campus.json с локации от СУ"
+2. "Добави media queries за responsive дизайн"
+3. "Напиши SQL INSERT заявки за тестови данни"
+4. "Провери Dijkstra имплементацията и предложи подобрения"
+Резултат: Допълване на примерни данни и финални корекции.
 ================================================================================
 11. КАКВО НАУЧИХ
 ================================================================================
-
-Никола Драгнев (ФН: 1MI0800237):
-- Научих се да имплементирам алгоритъма на Dijkstra в практически проект
-- Научих се как изглежда цялостната структура на един Web проект/приложение.
-- Разбрах как се представят графи в JavaScript (съседски списък - adjacency list)
-- Научих как да реконструирам път след изпълнение на алгоритъма (чрез previous масив)
-- Подобрих уменията си за обърно-ориентирано програмиране в JavaScript (ES6 класове)
-- Научих се да пиша техническа документация за софтуерни проекти
-
-Георги Николов (ФН: 4MI0800188):
-- Научих се да работя с Leaflet и Leaflet Routing Machine
-- Разбрах как работят географските координатни системи (WGS84)
-- Научих Haversine формулата за изчисляване на разстояния между GPS точки
-- Научих се да интегрирам външни API-та (OpenStreetMap, OSRM)
-- Разбрах разликата между indoor и outdoor навигация
-
-Михаил Цветков:
-- Научих се да проектирам релационни бази данни с MySQL
-- Разбрах важността на PDO за защита от SQL injection
-- Научих се да изграждам REST API с PHP
-- Придобих опит с хеширане на пароли и сесии в PHP
-- Разбрах как да структурирам конфигурационни файлове
-- Научих се да имплементирам функционалност за любими маршрути с AJAX
-
-Жулиета Янева:
-- Научих се да работя с JSON и CSV формати за импорт/експорт
-- Разбрах как се създават форми за автентикация с валидация
-- Научих се да използвам Fetch API за AJAX заявки
-- Подобрих уменията си за CSS дизайн и респонсивен интерфейс
-- Разбрах важността на UX/UI дизайна за потребителското изживяване
-
+Никола Драгнев: Dijkstra, граф структури в JS, техническа документация
+Георги Николов: Leaflet, WGS84, Haversine, OSRM API, indoor/outdoor навигация
+Михаил Цветков: MySQL, PDO, REST API, bcrypt хеширане, PHP сесии
+Жулиета Янева: JSON/CSV формати, Fetch API, CSS responsive дизайн, UX/UI
 ================================================================================
 12. DEVOPS - ПОДКАРВАНЕ НА ПРОЕКТА
 ================================================================================
-
-12.1 Линк към проекта в GitLab на ФМИ:
-https://gitlab.hss.fmi.uni-sofia.bg/...
-
-12.2 Линк към разгърнат проект във ФМИ:
-https://w25-campnav-campus-navigator.hss.fmi.uni-sofia.bg
-
-12.3 Инструкции за подкарване:
-
-За локална инсталация (XAMPP):
+12.1 Линк: https://w25-campnav-campus-navigator.hss.fmi.uni-sofia.bg
+12.2 Инструкции за подкарване (XAMPP):
 1. Копирайте папката в C:\xampp\htdocs\ProjectWeb
-2. Стартирайте Apache и MySQL от XAMPP Control Panel
-3. Отворете phpMyAdmin (http://localhost/phpmyadmin)
-4. Импортирайте sql/database.sql
-5. Отворете http://localhost/ProjectWeb
-
-За Docker (ако се използва):
-- Необходими са Apache + PHP + MySQL контейнери
-- SQL файл: sql/database.sql
-- Конфигурация: php/config.php
-
+2. Стартирайте Apache и MySQL
+3. Импортирайте sql/database.sql в phpMyAdmin
+4. Отворете http://localhost/ProjectWeb
 ================================================================================
 13. ИЗПОЛЗВАНИ ИЗТОЧНИЦИ
 ================================================================================
-
-[1] Leaflet - Open-Source JavaScript Library for Interactive Maps
-    URL: https://leafletjs.com/
-    Дата на посещение: 2026-01-08
-
-[2] OpenStreetMap
-    URL: https://www.openstreetmap.org/
-    Дата на посещение: 2026-01-08
-
-[3] PHP PDO Documentation
-    URL: https://www.php.net/manual/en/book.pdo.php
-    Дата на посещение: 2026-01-10
-
-[4] Dijkstra's Algorithm - Wikipedia
-    URL: https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
-    Дата на посещение: 2026-01-08
-
-[5] XAMPP - Apache Friends
-    URL: https://www.apachefriends.org/
-    Дата на посещение: 2026-01-10
-
-[6] MDN Web Docs - JavaScript
-    URL: https://developer.mozilla.org/en-US/docs/Web/JavaScript
-    Дата на посещение: 2026-01-08
-
+[1] Leaflet - https://leafletjs.com/
+[2] OpenStreetMap - https://www.openstreetmap.org/
+[3] PHP PDO - https://www.php.net/manual/en/book.pdo.php
+[4] Dijkstra - https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm
+[5] XAMPP - https://www.apachefriends.org/
+[6] MDN JavaScript - https://developer.mozilla.org/en-US/docs/Web/JavaScript
 ================================================================================
 Предали (подписи):
-
 1. ........................................
    /Никола Драгнев, ФН: 1MI0800237, КН, 4 курс/
 
@@ -1044,4 +682,3 @@ https://w25-campnav-campus-navigator.hss.fmi.uni-sofia.bg
 
 Приел (подпис): ........................................
                 /проф. д-р Милен Петров/
-================================================================================
