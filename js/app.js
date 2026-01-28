@@ -221,15 +221,16 @@ function findPath() {
                           result = campusGraph.dijkstra(startId, "25", 4, typeOfTransport);
                           result2 = campusGraph.dijkstra("26", endId, 4, typeOfTransport);
                           result.distance+=15;
-                          showResultLink("https://moovitapp.com/index/bg/%D0%B3%D1%80%D0%B0%D0%B4%D1%81%D0%BA%D0%B8_%D1%82%D1%80%D0%B0%D0%BD%D1%81%D0%BF%D0%BE%D1%80%D1%82-line-10-Sofia_%D0%A1%D0%BE%D1%84%D0%B8%D1%8F-3501-856936-715153-0")
+                          showResultLink("https://moovitapp.com/tripplan/sofia_%D1%81%D0%BE%D1%84%D0%B8%D1%8F-3501/lines/94/712644/3049866/bg?ref=2&poiType=line&sid=11082717&customerId=4908&af_sub8=%2Findex%2Fbg%2F%25D0%25B3%25D1%2580%25D0%25B0%25D0%25B4%25D1%2581%25D0%25BA%25D0%25B8_%25D1%2582%25D1%2580%25D0%25B0%25D0%25BD%25D1%2581%25D0%25BF%25D0%25BE%25D1%2580%25D1%2582-line-94-Sofia_%25D0%25A1%25D0%25BE%25D1%2584%25D0%25B8%25D1%258F-3501-857201-712644-0&af_sub9=Upcoming%20arrivals")
                           break;
     
             case "tram":  
                           result = campusGraph.dijkstra(startId, "27", 4, typeOfTransport); 
                           result2 = campusGraph.dijkstra("28", endId, 4, typeOfTransport);
                           result.distance+=15;
-                          showResultLink("https://moovitapp.com/tripplan/sofia_%D1%81%D0%BE%D1%84%D0%B8%D1%8F-3501/lines/94/712644/3049866/bg?ref=2&poiType=line&sid=11082717&customerId=4908&af_sub8=%2Findex%2Fbg%2F%25D0%25B3%25D1%2580%25D0%25B0%25D0%25B4%25D1%2581%25D0%25BA%25D0%25B8_%25D1%2582%25D1%2580%25D0%25B0%25D0%25BD%25D1%2581%25D0%25BF%25D0%25BE%25D1%2580%25D1%2582-line-94-Sofia_%25D0%25A1%25D0%25BE%25D1%2584%25D0%25B8%25D1%258F-3501-857201-712644-0&af_sub9=Upcoming%20arrivals")
+                          showResultLink("https://moovitapp.com/index/bg/%D0%B3%D1%80%D0%B0%D0%B4%D1%81%D0%BA%D0%B8_%D1%82%D1%80%D0%B0%D0%BD%D1%81%D0%BF%D0%BE%D1%80%D1%82-line-10-Sofia_%D0%A1%D0%BE%D1%84%D0%B8%D1%8F-3501-856936-715153-0")
                           break;
+
     
             case "walk": 
                           result = campusGraph.dijkstra(startId, endId, 4, typeOfTransport);
