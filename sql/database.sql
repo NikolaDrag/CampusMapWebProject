@@ -12,13 +12,14 @@ COLLATE utf8mb4_unicode_ci;
 -- Избиране на базата данни
 USE campus_navigator;
 
+-- Drop tables in correct order (child tables first, then parent tables)
+DROP TABLE IF EXISTS event_interests;
+DROP TABLE IF EXISTS events;
 DROP TABLE IF EXISTS favorites;
 DROP TABLE IF EXISTS edges;
 DROP TABLE IF EXISTS nodes;
 DROP TABLE IF EXISTS buildings;
 DROP TABLE IF EXISTS users;
-DROP TABLE IF EXISTS events;
-DROP TABLE IF EXISTS event_interests;
 DROP TABLE IF EXISTS public_transport;
 
 
