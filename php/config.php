@@ -7,7 +7,7 @@ define('DB_USER', 'root');
 define('DB_PASS', '');
 define('DB_CHARSET', 'utf8mb4');
 
-define('SITE_URL', 'http://localhost/campus');
+define('SITE_URL', 'http://localhost/CampusMapWebProject');
 define('SITE_NAME', 'Campus Navigator');
 define('SITE_ROOT', dirname(__DIR__));
 
