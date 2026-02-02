@@ -1,4 +1,1 @@
 .vscode/
-
-# Sensitive configuration files
-php/config.php

@@ -1,14 +1,6 @@
 <?php
 //require_once 'config.php';
 
-// Define the connection details here instead
-define('DB_HOST', 'localhost');
-define('DB_NAME', 'campus_navigator'); // Make sure this matches your phpMyAdmin DB name
-define('DB_USER', 'root');
-define('DB_PASS', '');           // Default XAMPP password is empty
-define('DB_CHARSET', 'utf8mb4');
-
-
 function getDBConnection() {
     static $pdo = null;
     
