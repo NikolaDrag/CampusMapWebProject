@@ -94,7 +94,8 @@ function fetchEvents(nodeId) {
                     <strong>${event.name}</strong><br>
                     ${event.description ? `<p style="text-align: left; margin: 10px 0; color: #666;">${event.description}</p>` : ''}
                     Начало: ${event.start_time}<br>
-                    Край: ${event.end_time}
+                    Край: ${event.end_time}<br>
+                    <a href="index.html?destination=${nodeId}" class="go-to-event-btn" onclick="event.stopPropagation();">📍 Отиди на събитието</a>
                 `;
 
                 li.addEventListener('click', () => {

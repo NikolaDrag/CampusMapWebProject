@@ -255,6 +255,28 @@ main {
     color: #62e81a;
 }
 
+/* Go to event button style */
+.go-to-event-btn {
+    display: inline-block;
+    margin-top: 15px;
+    padding: 10px 18px;
+    background-color: #1a73e8;
+    color: #fff !important;
+    border-radius: 8px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: background-color 0.2s, transform 0.1s, box-shadow 0.2s;
+    box-shadow: 0 2px 4px rgba(26, 115, 232, 0.3);
+}
+
+.go-to-event-btn:hover {
+    background-color: #1557b0;
+    color: #fff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(26, 115, 232, 0.4);
+}
+
 .interested-users {
     list-style: none;
     padding: 0;

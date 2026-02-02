@@ -24,8 +24,32 @@ document.addEventListener('DOMContentLoaded', async function () {
     populateDropdowns();
     setupEventListeners();
     checkAuthStatus();
-
+    checkDestinationFromURL();
 });
+
+function checkDestinationFromURL() {
+    const params = new URLSearchParams(window.location.search);
+    const destinationId = params.get('destination');
+    
+    if (destinationId) {
+        const endSelect = document.getElementById('end-point');
+        if (endSelect) {
+            endSelect.value = destinationId;
+            
+            // Highlight the destination marker on the map
+            const node = campusGraph.getNode(destinationId);
+            if (node) {
+                campusMap.map.setView([node.lat, node.lng], 18);
+                
+                // Show a notification to the user
+                const resultText = document.getElementById('result-text');
+                if (resultText) {
+                    resultText.innerHTML = `<strong>Дестинация:</strong> ${node.name}<br>Изберете начална точка и натиснете "Намери път"`;
+                }
+            }
+        }
+    }
+}
 
 function initMap() {
     const center = sampleCampusData.center;
